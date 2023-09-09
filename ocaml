@@ -1,0 +1,1 @@
+docker run -it -u root -v /mnt/nfs/homes/clorin/42/ft_turing:/home/opam/code -w /home/opam/code ocaml/opam2 
