@@ -6,13 +6,14 @@
 (*   By: clorin <clorin@student.42.fr>              +#+  +:+       +#+        *)
 (*                                                +#+#+#+#+#+   +#+           *)
 (*   Created: 2023/09/10 09:37:53 by clorin            #+#    #+#             *)
-(*   Updated: 2023/09/12 16:56:07 by clorin           ###   ########.fr       *)
+(*   Updated: 2023/09/14 12:43:12 by clorin           ###   ########.fr       *)
 (*                                                                            *)
 (* ************************************************************************** *)
 
 open Yojson.Basic.Util
 open Utils
 open Colors
+open Tape
 
 type direction = LEFT | RIGHT
 
@@ -25,6 +26,11 @@ type transition = {
 
 type transitions = (string, transition list) Hashtbl.t
 
+let direction_to_string (dir : direction) : string =
+  match dir with
+  | LEFT -> "Left"
+  | RIGHT -> "Right"
+
 class machine =
   object(self)
     val mutable _name : string = ""
@@ -35,8 +41,18 @@ class machine =
     val mutable _finals : string list = []
     val mutable _transitions : transitions = Hashtbl.create 10  (* Initialize an empty hash table *)
     val mutable _valid : bool = false
-    initializer print_endline "Machine created"
-
+    val mutable _tape : tape option = None
+    val mutable _state : string = ""
+    val mutable _read : char = '_'
+    
+    method add_tape (str:string) = 
+      if String.contains str _blank then
+        failwith "The blank character must not be present in the input.";
+      _tape <- Some(new Tape.tape str _blank);
+      match _tape with
+      | Some t -> _read <- t#read_head();
+      | None -> ();
+      
     method build (file : string) =
       Printf.printf "Loading \"%s%s%s\" ... " yellow file reset;
       try
@@ -201,6 +217,7 @@ class machine =
         _finals <- finals;
         _transitions <- transitions;
         _valid <- true;
+        _state <- List.nth _states 0;
         Printf.printf " %s%s%s\n" green "Ok" reset;
         if !found_halt_state = false then
           Printf.printf "%sWarning%s The list of transitions doesn't seem to have any stop states.\n" yellow reset;
@@ -211,9 +228,9 @@ class machine =
     method print : unit =
       if self#is_valid then
         begin
-          print_endline "****************************************";
+          print_endline "**********************************************************";
           Printf.printf "*           %s                 \n" _name;
-          print_endline "****************************************";
+          print_endline "**********************************************************";
           print_list_char _alphabet "Alphabet";
           Printf.printf "Blank : '%c'\n" _blank;
           print_list_string _states "States";
@@ -224,13 +241,26 @@ class machine =
             if not (List.mem state_name _finals) then
               self#print_transitions_for_state state_name
           ) _states;
+          print_endline "**********************************************************";
         end
       else
         Printf.printf "Machine ... %sNot Valid%s\n" red reset
     
+    method tape_to_string () : string = 
+      match _tape with
+        | Some t -> t#to_string()
+        | None -> "No tape"
+        
+    method print_tape () : unit = 
+      print_string("["^self#tape_to_string()^"]");
+
     method is_valid = 
       _valid
 
+    method read_head_tape () : char = match _tape with
+      | Some t -> _read <- t#read_head(); _read
+      | _ -> failwith "No tape in the machine."
+      
     method validation = 
       if List.mem _blank _alphabet = false then
         begin
@@ -258,4 +288,78 @@ class machine =
       with
       | Not_found ->
         Printf.printf "State %s%s%s not found in transitions\n" yellow state_name reset  
+    
+    method get_transition () : (char * direction * string) =
+      try
+        let transitions = Hashtbl.find _transitions _state in
+        let transition =
+          List.find (fun trans -> trans.read = _read) transitions
+        in
+        (transition.write, transition.action, transition.to_state)
+      with
+      | Not_found ->
+        failwith "No transition found for the given state and read character"
+    
+    method print_transition_info () : unit =
+      try
+        let transitions = Hashtbl.find _transitions _state in
+        let transition =
+          List.find (fun trans -> trans.read = _read) transitions
+        in
+        Printf.printf "(%s, %c) -> (%s, %c, %s)\n" _state _read transition.to_state transition.write (direction_to_string transition.action);
+      with
+      | Not_found ->
+        failwith "No transition found for the given state and read character"
+
+    method get_read ():char = 
+      _read
+    method get_state() : string = 
+      _state
+    method move_left() : unit = match _tape with
+      | Some t -> _read <- t#move_left();
+      | None -> ()
+    method move_right () : unit = match _tape with
+      | Some t -> _read <- t#move_right();
+      | None -> ()
+
+    method is_stopped () : bool = 
+      List.mem _state _finals
+
+    method private write (c:char) : unit = match _tape with
+      | Some t -> t#write_head c; _read <- c;
+      | None -> ()
+
+    method step() : unit = 
+      let tape = Utils.pad_string_to_length (self#tape_to_string()) 30 _blank in
+      print_string ("["^tape^"] ");
+      self#print_transition_info();
+      let (write, action, new_state) = self#get_transition() in
+      self#write write;
+      _state <- new_state;
+      match action with
+        | LEFT -> self#move_left();
+        | RIGHT -> self#move_right();
+    
+    method run() : unit = 
+      (*
+      tant que not(self#is_stopped())
+          on va chercher la transition avec get_transition()
+          on ecrit write
+          on change _state
+          on bouge suivant action LEFT|RIGHT
+          on ecrit l'etat de la bande
+      *)
+      let rec loop()  = 
+        self#step();
+        if not(self#is_stopped()) then loop()
+        else ()
+      in
+      if self#is_valid then
+        begin
+          loop();
+          let tape = Utils.pad_string_to_length (self#tape_to_string()) 30 _blank in
+          print_endline ("["^tape^"] ");
+        end
+      else
+        print_endline "Machine is not valid"
   end
