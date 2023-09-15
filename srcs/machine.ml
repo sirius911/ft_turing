@@ -6,7 +6,7 @@
 (*   By: clorin <clorin@student.42.fr>              +#+  +:+       +#+        *)
 (*                                                +#+#+#+#+#+   +#+           *)
 (*   Created: 2023/09/10 09:37:53 by clorin            #+#    #+#             *)
-(*   Updated: 2023/09/14 12:43:12 by clorin           ###   ########.fr       *)
+(*   Updated: 2023/09/15 14:35:00 by clorin           ###   ########.fr       *)
 (*                                                                            *)
 (* ************************************************************************** *)
 
@@ -46,14 +46,20 @@ class machine =
     val mutable _read : char = '_'
     
     method add_tape (str:string) = 
+      if str = "" then failwith "empty input";
+      if self#is_valid() = false then 
+        failwith "No machine active";
       if String.contains str _blank then
         failwith "The blank character must not be present in the input.";
+      if  not( is_string_in_alphabet str _alphabet) then
+        failwith "an input character is not present in Alphabet.";
       _tape <- Some(new Tape.tape str _blank);
       match _tape with
       | Some t -> _read <- t#read_head();
       | None -> ();
       
     method build (file : string) =
+      if file = "" then failwith "empty input";
       Printf.printf "Loading \"%s%s%s\" ... " yellow file reset;
       try
         let json = Yojson.Basic.from_file file in
@@ -226,7 +232,7 @@ class machine =
       | ex -> Printf.printf "%sKO\nError: %s%s\n" red (Printexc.to_string ex) reset
 
     method print : unit =
-      if self#is_valid then
+      if self#is_valid() then
         begin
           print_endline "**********************************************************";
           Printf.printf "*           %s                 \n" _name;
@@ -236,7 +242,6 @@ class machine =
           print_list_string _states "States";
           Printf.printf "Initial : %s\n" _initial;
           print_list_string _finals "Finals";
-          (* List.iter (fun state_name -> self#print_transitions_for_state state_name) _states; *)
           List.iter (fun state_name ->
             if not (List.mem state_name _finals) then
               self#print_transitions_for_state state_name
@@ -246,15 +251,23 @@ class machine =
       else
         Printf.printf "Machine ... %sNot Valid%s\n" red reset
     
+    method have_tape() : bool =
+      (_tape <> None)
+
     method tape_to_string () : string = 
-      match _tape with
-        | Some t -> t#to_string()
+        match _tape with
+        | Some t -> "["^(Utils.pad_string_to_length (t#to_string()) 30 _blank)^"]"
         | None -> "No tape"
         
     method print_tape () : unit = 
       print_string("["^self#tape_to_string()^"]");
 
-    method is_valid = 
+    method reload() : unit = 
+      match _tape with
+        | Some t -> t#reload(); _state <- _initial; ignore(self#read_head_tape())
+        | None-> failwith "No tape"
+    
+    method is_valid():bool = 
       _valid
 
     method read_head_tape () : char = match _tape with
@@ -278,12 +291,12 @@ class machine =
         true
 
     method print_transitions_for_state (state_name : string) : unit =
-      Printf.printf "Transitions for state %s:\n" state_name;
+      Printf.printf "Transitions for state %s%s%s:\n" blue state_name reset;
       try
         let transitions = Hashtbl.find _transitions state_name in
         List.iter (fun trans ->
-          Printf.printf "\tRead: %c, To State: %s, Write: %c, Action: %s\n"
-            trans.read trans.to_state trans.write (match trans.action with LEFT -> "LEFT" | RIGHT -> "RIGHT")
+          Printf.printf "\t%sRead:%s %c, %sTo State:%s %s, %sWrite%s: %c, %sAction:%s %s\n"
+            yellow reset trans.read  yellow reset trans.to_state yellow reset trans.write yellow reset (match trans.action with LEFT -> "LEFT" | RIGHT -> "RIGHT")
         ) transitions;
       with
       | Not_found ->
@@ -298,9 +311,10 @@ class machine =
         (transition.write, transition.action, transition.to_state)
       with
       | Not_found ->
-        failwith "No transition found for the given state and read character"
+        failwith ("No transition found for the given state ("^_state^") and read character '"^(String.make 1 _read)^"'")
     
     method print_transition_info () : unit =
+      (* print the transition for actual state and read tape*)
       try
         let transitions = Hashtbl.find _transitions _state in
         let transition =
@@ -309,12 +323,14 @@ class machine =
         Printf.printf "(%s, %c) -> (%s, %c, %s)\n" _state _read transition.to_state transition.write (direction_to_string transition.action);
       with
       | Not_found ->
-        failwith "No transition found for the given state and read character"
+        failwith ("No transition found for the given state ("^_state^") and read character '"^(String.make 1 _read)^"'")
 
     method get_read ():char = 
       _read
     method get_state() : string = 
       _state
+    method get_name () : string = 
+      _name
     method move_left() : unit = match _tape with
       | Some t -> _read <- t#move_left();
       | None -> ()
@@ -330,8 +346,7 @@ class machine =
       | None -> ()
 
     method step() : unit = 
-      let tape = Utils.pad_string_to_length (self#tape_to_string()) 30 _blank in
-      print_string ("["^tape^"] ");
+      print_string (self#tape_to_string());
       self#print_transition_info();
       let (write, action, new_state) = self#get_transition() in
       self#write write;
@@ -354,11 +369,11 @@ class machine =
         if not(self#is_stopped()) then loop()
         else ()
       in
-      if self#is_valid then
+      if self#is_valid() then
         begin
           loop();
           let tape = Utils.pad_string_to_length (self#tape_to_string()) 30 _blank in
-          print_endline ("["^tape^"] ");
+          print_endline ("Ending -> "^tape);
         end
       else
         print_endline "Machine is not valid"

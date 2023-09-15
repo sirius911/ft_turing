@@ -6,7 +6,7 @@
 (*   By: clorin <clorin@student.42.fr>              +#+  +:+       +#+        *)
 (*                                                +#+#+#+#+#+   +#+           *)
 (*   Created: 2023/09/11 10:04:52 by clorin            #+#    #+#             *)
-(*   Updated: 2023/09/14 11:59:00 by clorin           ###   ########.fr       *)
+(*   Updated: 2023/09/15 09:24:50 by clorin           ###   ########.fr       *)
 (*                                                                            *)
 (* ************************************************************************** *)
 
@@ -25,5 +25,9 @@ let pad_string_to_length (str : string) (length : int) (blank : char) : string=
   if str_length >= length then
     str
   else
-    str ^ String.make (length - str_length) blank;;
+    str ^ String.make (length - str_length) blank
+
+let is_string_in_alphabet s alphabet =
+  let string_chars = List.init (String.length s) (String.get s) in
+  List.for_all (fun c -> List.mem c alphabet) string_chars
   

@@ -6,7 +6,7 @@
 (*   By: clorin <clorin@student.42.fr>              +#+  +:+       +#+        *)
 (*                                                +#+#+#+#+#+   +#+           *)
 (*   Created: 2023/09/13 11:00:06 by clorin            #+#    #+#             *)
-(*   Updated: 2023/09/14 10:18:07 by clorin           ###   ########.fr       *)
+(*   Updated: 2023/09/15 12:12:22 by clorin           ###   ########.fr       *)
 (*                                                                            *)
 (* ************************************************************************** *)
 
@@ -17,10 +17,14 @@ class tape (initial_string : string) (blank : char) =
     val mutable _tape_contents = List.of_seq (String.to_seq initial_string)
     val mutable _tape_head = 0
     val _blank = blank
+    val _input = initial_string
 
     method init_tape (initial_string : string) = 
       _tape_contents <- List.of_seq (String.to_seq initial_string)
     
+    method reload() = 
+      self#init_tape(_input); _tape_head <- 0
+
     method move_left () : char =
       _tape_head <- _tape_head - 1;
       if _tape_head < 0 then 
@@ -57,7 +61,7 @@ class tape (initial_string : string) (blank : char) =
         | [] -> ret
         | head::queue -> 
           if i = _tape_head then
-            ret ^ "<"^red^(String.make 1 head)^reset^">" ^ (loop queue ret (i+1))
+            ret ^red^(String.make 1 head)^reset^(loop queue ret (i+1))
           else
             ret ^ (String.make 1 head)^(loop queue ret (i+1))
       in
