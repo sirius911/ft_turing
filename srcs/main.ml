@@ -6,7 +6,7 @@
 (*   By: clorin <clorin@student.42.fr>              +#+  +:+       +#+        *)
 (*                                                +#+#+#+#+#+   +#+           *)
 (*   Created: 2023/09/10 10:24:16 by clorin            #+#    #+#             *)
-(*   Updated: 2023/09/15 13:22:15 by clorin           ###   ########.fr       *)
+(*   Updated: 2023/09/17 21:34:20 by clorin           ###   ########.fr       *)
 (*                                                                            *)
 (* ************************************************************************** *)
 
@@ -24,10 +24,18 @@ let print_usage () =
 
 let main_run (jsonfile:string) (input:string) : unit =
   let myMachine = new Machine.machine in
-  myMachine#build jsonfile;
-  myMachine#add_tape input;
-  myMachine#print;
-  myMachine#run()
+  try
+    myMachine#build jsonfile;
+    myMachine#add_tape input;
+    myMachine#print;
+    myMachine#run()
+  with 
+    | Failure msg -> 
+      print_endline (red^"Error : "^ reset ^ msg);
+      exit(1)
+    | ex ->
+      print_endline (red^"Error : " ^reset^ Printexc.to_string ex);
+      exit(1)
 
 let () =
   match Array.to_list Sys.argv with
@@ -45,21 +53,3 @@ let () =
       main_run jsonfile input
     | _ -> print_usage();
   print_endline ""
-
-
-(* let () =  *)
-  (* let myMachine = new Machine.machine in   *)
-(*   
-  let tape = "111-1=" in
-  myMachine#build "../machines/unary_sub.json";
-  
-  myMachine#add_tape tape;
-  myMachine#print;
-  
-  myMachine#run(); *)
-
-  (* myMachine#build "../machines/0n1n.json";
-  myMachine#add_tape "000111";
-  myMachine#print;
-  myMachine#run();
-  print_endline "end" *)

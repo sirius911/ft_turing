@@ -6,7 +6,7 @@
 (*   By: clorin <clorin@student.42.fr>              +#+  +:+       +#+        *)
 (*                                                +#+#+#+#+#+   +#+           *)
 (*   Created: 2023/09/10 09:37:53 by clorin            #+#    #+#             *)
-(*   Updated: 2023/09/15 14:35:00 by clorin           ###   ########.fr       *)
+(*   Updated: 2023/09/17 21:37:16 by clorin           ###   ########.fr       *)
 (*                                                                            *)
 (* ************************************************************************** *)
 
@@ -223,7 +223,7 @@ class machine =
         _finals <- finals;
         _transitions <- transitions;
         _valid <- true;
-        _state <- List.nth _states 0;
+        _state <- initial;
         Printf.printf " %s%s%s\n" green "Ok" reset;
         if !found_halt_state = false then
           Printf.printf "%sWarning%s The list of transitions doesn't seem to have any stop states.\n" yellow reset;
@@ -243,8 +243,7 @@ class machine =
           Printf.printf "Initial : %s\n" _initial;
           print_list_string _finals "Finals";
           List.iter (fun state_name ->
-            if not (List.mem state_name _finals) then
-              self#print_transitions_for_state state_name
+            self#print_transitions_for_state state_name
           ) _states;
           print_endline "**********************************************************";
         end
