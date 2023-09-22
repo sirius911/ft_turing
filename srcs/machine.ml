@@ -6,7 +6,7 @@
 (*   By: clorin <clorin@student.42.fr>              +#+  +:+       +#+        *)
 (*                                                +#+#+#+#+#+   +#+           *)
 (*   Created: 2023/09/10 09:37:53 by clorin            #+#    #+#             *)
-(*   Updated: 2023/09/17 21:37:16 by clorin           ###   ########.fr       *)
+(*   Updated: 2023/09/21 10:33:33 by clorin           ###   ########.fr       *)
 (*                                                                            *)
 (* ************************************************************************** *)
 
@@ -31,8 +31,9 @@ let direction_to_string (dir : direction) : string =
   | LEFT -> "Left"
   | RIGHT -> "Right"
 
-class machine =
+class machine (verbose:bool)=
   object(self)
+    val _verbose : bool = verbose
     val mutable _name : string = ""
     val mutable _alphabet : char list = []
     val mutable _blank : char = '_'
@@ -50,7 +51,7 @@ class machine =
       if self#is_valid() = false then 
         failwith "No machine active";
       if String.contains str _blank then
-        failwith "The blank character must not be present in the input.";
+        failwith ("The blank character '"^(String.make 1 (_blank))^"' must not be present in the input.");
       if  not( is_string_in_alphabet str _alphabet) then
         failwith "an input character is not present in Alphabet.";
       _tape <- Some(new Tape.tape str _blank);
@@ -60,7 +61,7 @@ class machine =
       
     method build (file : string) =
       if file = "" then failwith "empty input";
-      Printf.printf "Loading \"%s%s%s\" ... " yellow file reset;
+      if _verbose then Printf.printf "Loading \"%s%s%s\" ... " yellow file reset;
       try
         let json = Yojson.Basic.from_file file in
         (*                    name                   *)
@@ -103,7 +104,7 @@ class machine =
         if String.length blank != 1 then
           failwith "blank must be a string of length strictly equal to 1." ;
         if List.mem blank.[0] alphabet = false then
-          failwith "must be part of Alphabet list.";
+          failwith ("Blank caractere '"^blank^"' must be part of Alphabet list.");
 
           (*                    States                   *)
         let states_json = json |> member "states" in
@@ -217,14 +218,14 @@ class machine =
         (* Set the parsed values in the object *)
         _name <- name;
         _alphabet <- alphabet;
-        _blank <- blank.[0];  (* Assuming blank is a single character *)
+        _blank <- blank.[0];
         _states <- states;
         _initial <- initial;
         _finals <- finals;
         _transitions <- transitions;
         _valid <- true;
         _state <- initial;
-        Printf.printf " %s%s%s\n" green "Ok" reset;
+        if _verbose then Printf.printf " %s%s%s\n" green "Ok" reset;
         if !found_halt_state = false then
           Printf.printf "%sWarning%s The list of transitions doesn't seem to have any stop states.\n" yellow reset;
       with
@@ -255,11 +256,8 @@ class machine =
 
     method tape_to_string () : string = 
         match _tape with
-        | Some t -> "["^(Utils.pad_string_to_length (t#to_string()) 30 _blank)^"]"
+        | Some t -> yellow^"["^reset^(Utils.pad_string_to_length (t#to_string()) 30 _blank)^yellow^"]"^reset
         | None -> "No tape"
-        
-    method print_tape () : unit = 
-      print_string("["^self#tape_to_string()^"]");
 
     method reload() : unit = 
       match _tape with
@@ -272,22 +270,6 @@ class machine =
     method read_head_tape () : char = match _tape with
       | Some t -> _read <- t#read_head(); _read
       | _ -> failwith "No tape in the machine."
-      
-    method validation = 
-      if List.mem _blank _alphabet = false then
-        begin
-          Printf.printf "%sKO%s\n\t->Blank character [%s%c%s] must be in Alphabet " red reset yellow _blank reset;
-          print_list_char _alphabet "";
-          false
-        end
-      else if List.mem _initial _states = false then
-        begin
-          Printf.printf "%sKO%s\n\t->Initial state [%s%s%s] must be in States list " red reset yellow _initial reset;
-          print_list_string _states "";
-          false
-        end
-      else
-        true
 
     method print_transitions_for_state (state_name : string) : unit =
       Printf.printf "Transitions for state %s%s%s:\n" blue state_name reset;
@@ -345,8 +327,9 @@ class machine =
       | None -> ()
 
     method step() : unit = 
-      print_string (self#tape_to_string());
-      self#print_transition_info();
+      if _verbose then (
+          print_string (self#tape_to_string());
+          self#print_transition_info());
       let (write, action, new_state) = self#get_transition() in
       self#write write;
       _state <- new_state;
@@ -354,7 +337,7 @@ class machine =
         | LEFT -> self#move_left();
         | RIGHT -> self#move_right();
     
-    method run() : unit = 
+    method run () : int = 
       (*
       tant que not(self#is_stopped())
           on va chercher la transition avec get_transition()
@@ -363,17 +346,23 @@ class machine =
           on bouge suivant action LEFT|RIGHT
           on ecrit l'etat de la bande
       *)
-      let rec loop()  = 
+      let rec loop (count:int) = 
         self#step();
-        if not(self#is_stopped()) then loop()
-        else ()
+        if not(self#is_stopped()) then loop(count + 1)
+        else (count)
       in
       if self#is_valid() then
         begin
-          loop();
+          let count = loop (0) in
           let tape = Utils.pad_string_to_length (self#tape_to_string()) 30 _blank in
-          print_endline ("Ending -> "^tape);
+          if _verbose then 
+            (print_endline ("Ending -> "^tape);
+             Printf.printf "%d operation(s)\n" count);
+          count
         end
       else
-        print_endline "Machine is not valid"
+        begin
+         if _verbose then print_endline "Machine is not valid"; 
+          0
+        end
   end

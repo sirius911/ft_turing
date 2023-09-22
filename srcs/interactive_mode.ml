@@ -6,7 +6,7 @@
 (*   By: clorin <clorin@student.42.fr>              +#+  +:+       +#+        *)
 (*                                                +#+#+#+#+#+   +#+           *)
 (*   Created: 2023/09/15 10:04:02 by clorin            #+#    #+#             *)
-(*   Updated: 2023/09/15 13:24:21 by clorin           ###   ########.fr       *)
+(*   Updated: 2023/09/21 10:31:29 by clorin           ###   ########.fr       *)
 (*                                                                            *)
 (* ************************************************************************** *)
 
@@ -67,7 +67,7 @@ let rec command_loop (myMachine : Machine.machine) (refresh:bool)=
         | "left" -> myMachine#move_left(); command_loop myMachine false
         | "right" -> myMachine#move_right(); command_loop myMachine false
         | "info" -> myMachine#print; command_loop myMachine false
-        | "run" -> myMachine#run(); command_loop myMachine false
+        | "run" -> ignore(myMachine#run()); command_loop myMachine false
         | "step" -> myMachine#step(); command_loop myMachine false
         | "transition" -> myMachine#print_transition_info(); command_loop myMachine false
         | "state" -> Printf.printf "Actual state is %s%s%s\n" yellow (myMachine#get_state()) reset; command_loop myMachine false
@@ -84,7 +84,7 @@ let rec command_loop (myMachine : Machine.machine) (refresh:bool)=
         command_loop myMachine false
 
 let main_interactive_mode (jsonfile:string)(input:string) : unit =
-  let myMachine = new Machine.machine in
+  let myMachine = new Machine.machine true in
   Printf.printf "%sInteractive Mode%s (%s)(%s) : tape commands for help.\n"blue reset jsonfile input;
   if jsonfile <> "" then
     myMachine#build jsonfile;
