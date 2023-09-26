@@ -6,7 +6,7 @@
 (*   By: clorin <clorin@student.42.fr>              +#+  +:+       +#+        *)
 (*                                                +#+#+#+#+#+   +#+           *)
 (*   Created: 2023/09/15 10:04:02 by clorin            #+#    #+#             *)
-(*   Updated: 2023/09/26 10:05:25 by clorin           ###   ########.fr       *)
+(*   Updated: 2023/09/26 18:00:45 by clorin           ###   ########.fr       *)
 (*                                                                            *)
 (* ************************************************************************** *)
 
@@ -55,7 +55,7 @@ let show_commands () : unit =
     print_endline ("\t| "^yellow^"reload"^reset^" -> reload tape from initial input");
     print_endline ("\t| "^yellow^"tape"^reset^" -> Print the tape")
     
-let rec command_loop (m : machine) (refresh:bool)=
+let rec command_loop (m : machine) (refresh:bool): int=
   try
     print_endline(info m refresh);
     Printf.printf "> ";
@@ -65,7 +65,7 @@ let rec command_loop (m : machine) (refresh:bool)=
     | command :: arguments ->
         match command with
         | "" -> command_loop m false
-        | "exit" -> ()
+        | "exit" -> 0
         | "load" -> (let newMachine = Machine.create (String.concat "" arguments) true in
           match newMachine with
             | Some newM -> command_loop newM true
@@ -92,7 +92,7 @@ let rec command_loop (m : machine) (refresh:bool)=
         print_endline (red^"Error : " ^reset^ Printexc.to_string ex);
         command_loop m false
 
-let main_interactive_mode (jsonfile: string) (input: string) : unit =
+let main_interactive_mode (jsonfile: string) (input: string) : int =
   Printf.printf "%sInteractive Mode%s (%s)(%s) : tape commands for help.\n" "blue" "reset" jsonfile input;
   let m =
     match jsonfile with
