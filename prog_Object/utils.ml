@@ -6,11 +6,9 @@
 (*   By: clorin <clorin@student.42.fr>              +#+  +:+       +#+        *)
 (*                                                +#+#+#+#+#+   +#+           *)
 (*   Created: 2023/09/11 10:04:52 by clorin            #+#    #+#             *)
-(*   Updated: 2023/09/25 14:20:29 by clorin           ###   ########.fr       *)
+(*   Updated: 2023/09/18 16:47:41 by clorin           ###   ########.fr       *)
 (*                                                                            *)
 (* ************************************************************************** *)
-
-open Types
 
 let print_list_string (liste: string list) (label: string) : unit =
   let formatted_list = List.map (fun s -> "\"" ^ s ^ "\"") liste in
@@ -33,7 +31,3 @@ let is_string_in_alphabet s alphabet =
   let string_chars = List.init (String.length s) (String.get s) in
   List.for_all (fun c -> List.mem c alphabet) string_chars
   
-let direction_to_string (dir : direction) : string =
-  match dir with
-  | LEFT -> "Left"
-  | RIGHT -> "Right"

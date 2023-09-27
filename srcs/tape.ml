@@ -6,64 +6,89 @@
 (*   By: clorin <clorin@student.42.fr>              +#+  +:+       +#+        *)
 (*                                                +#+#+#+#+#+   +#+           *)
 (*   Created: 2023/09/13 11:00:06 by clorin            #+#    #+#             *)
-(*   Updated: 2023/09/15 12:12:22 by clorin           ###   ########.fr       *)
+(*   Updated: 2023/09/27 09:28:30 by clorin           ###   ########.fr       *)
 (*                                                                            *)
 (* ************************************************************************** *)
 
 open Colors
 
-class tape (initial_string : string) (blank : char) =
-  object(self)
-    val mutable _tape_contents = List.of_seq (String.to_seq initial_string)
-    val mutable _tape_head = 0
-    val _blank = blank
-    val _input = initial_string
+module Tape = 
+struct
+  type t = {
+    tape_contents : char list;
+    tape_head : int;
+    blank : char;
+    input : string;
+  } 
 
-    method init_tape (initial_string : string) = 
-      _tape_contents <- List.of_seq (String.to_seq initial_string)
-    
-    method reload() = 
-      self#init_tape(_input); _tape_head <- 0
+  let create (initial_string : string) (blank : char) =
+    let tape_contents = List.of_seq (String.to_seq initial_string) in
+    {
+      tape_contents = tape_contents;
+      tape_head = 0;
+      blank = blank;
+      input = initial_string;
+    }
+  
+  let init (tape : t) (initial_string : string) : t =
+    { tape with tape_contents = List.of_seq (String.to_seq initial_string) }
 
-    method move_left () : char =
-      _tape_head <- _tape_head - 1;
-      if _tape_head < 0 then 
-      (
-        _tape_contents <- _blank :: _tape_contents;
-        _tape_head <- 0;
-      );
-      self#read_head()
-
-    method move_right () : char  =
-      _tape_head <- _tape_head + 1;
-      if _tape_head >= List.length _tape_contents then 
-        _tape_contents <- _tape_contents @ [_blank];
-      self#read_head()
+  let reload (tape : t) : t =
+    let new_tape_contents = List.of_seq (String.to_seq tape.input) in
+  { tape with tape_head = 0; tape_contents = new_tape_contents }
       
-    method read_head () : char = 
-      List.nth _tape_contents _tape_head
+  let print (tape : t) : unit =
+    let result =
+      List.mapi (fun i cell ->
+        if i = tape.tape_head then Printf.sprintf "<%s%c%s>" "\x1b[31m" cell "\x1b[0m"
+        else String.make 1 cell
+      ) tape.tape_contents
+    in
+    let tape_string = String.concat "" result in
+    print_endline tape_string  
 
-    method write_head value : unit = 
-      let updated_list = 
-        List.mapi (fun i cell ->
-          if i = _tape_head then value else cell
-        ) _tape_contents
-      in
-      _tape_contents <- updated_list
-
-    method print () :unit = 
-      List.iteri (fun i cell -> 
-        if i = _tape_head then Printf.printf"<%s%c%s>" red cell reset else print_char cell) _tape_contents;
-      print_newline ()
-
-    method to_string () : string = 
-      let rec loop liste ret i = match liste with
-        | [] -> ret
-        | head::queue -> 
-          if i = _tape_head then
-            ret ^red^(String.make 1 head)^reset^(loop queue ret (i+1))
+  let to_string (tape : t) : string = 
+    let rec loop tape_contents i acc =
+      match tape_contents with
+      | [] -> acc
+      | head :: tail ->
+        let cell_str =
+          if i = tape.tape_head then
+            Printf.sprintf "<%s%c%s>" "\x1b[31m" head "\x1b[0m"
           else
-            ret ^ (String.make 1 head)^(loop queue ret (i+1))
-      in
-      loop _tape_contents "" 0
-  end
+            String.make 1 head
+        in
+        loop tail (i + 1) (acc ^ cell_str)
+    in
+    loop tape.tape_contents 0 ""
+
+  let move_left (tape : t) : t = 
+    let new_tape_contents, new_tape_head =
+      if tape.tape_head > 0 then
+        (tape.tape_contents, tape.tape_head - 1)
+      else
+        (tape.blank :: tape.tape_contents, 0)
+    in
+    { tape with tape_contents = new_tape_contents; tape_head = new_tape_head }
+
+  let move_right (tape : t) : t = 
+    let new_tape_contents, new_tape_head =
+      if tape.tape_head < List.length tape.tape_contents - 1 then
+        (tape.tape_contents, tape.tape_head + 1)
+      else
+        (tape.tape_contents @ [tape.blank], tape.tape_head + 1)
+    in
+    { tape with tape_contents = new_tape_contents; tape_head = new_tape_head }
+
+  let read_head (tape : t) : char =
+    List.nth tape.tape_contents tape.tape_head
+
+  let write_head (tape : t) (value : char) : t = 
+    let updated_list =
+      List.mapi (fun i cell ->
+        if i = tape.tape_head then value else cell
+      ) tape.tape_contents
+    in
+    { tape with tape_contents = updated_list }
+    
+end

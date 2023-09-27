@@ -1,13 +1,14 @@
-module type Tape = 
+module Tape :
 sig
   type  t
 
-  val tape_head:int
-  val blank : char
-  val input : string
-
-  val init_tape : string -> char -> t
-  val reload : unit -> unit
-  val move_left : unit -> char
-  val move_right : unit ->  char
+  val create : string -> char -> t
+  val init : t -> string -> t
+  val reload : t -> t
+  val move_left : t -> t
+  val move_right : t ->  t
+  val read_head : t -> char
+  val write_head : t -> char -> t
+  val print : t -> unit
+  val to_string : t -> string
 end
