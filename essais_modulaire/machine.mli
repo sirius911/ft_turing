@@ -1,4 +1,3 @@
-(* type direction = LEFT | RIGHT *)
 
 open Types
 
