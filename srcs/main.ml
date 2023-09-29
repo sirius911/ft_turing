@@ -6,7 +6,7 @@
 (*   By: clorin <clorin@student.42.fr>              +#+  +:+       +#+        *)
 (*                                                +#+#+#+#+#+   +#+           *)
 (*   Created: 2023/09/22 10:07:20 by clorin            #+#    #+#             *)
-(*   Updated: 2023/09/26 18:01:49 by clorin           ###   ########.fr       *)
+(*   Updated: 2023/09/28 10:05:17 by clorin           ###   ########.fr       *)
 (*                                                                            *)
 (* ************************************************************************** *)
 
@@ -49,6 +49,7 @@ let main_run (jsonfile:string) (input:string) : int =
       match Machine.create jsonfile true with
       | Some m ->
         let m_with_tape = Machine.add_tape m input in
+        Machine.print m_with_tape;
         Machine.run m_with_tape
       | None -> 0
     with
