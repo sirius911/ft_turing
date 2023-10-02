@@ -2,17 +2,11 @@
 	"name"    : "0 pow 2n",
 	"alphabet": [ "0", ".", "y", "n" ],
 	"blank"   : ".",
-	"states"  : [ "init", "scan_right", "scan_left", "ping", "pong", "HALT" ],
-	"initial" : "init",
+	"states"  : [ "scan_left", "ping", "pong", "HALT" ],
+	"initial" : "scan_left",
 	"finals"  : [ "HALT" ],
 	"transitions" : {
-		"init": [
-			{ "read" : "0", "to_state": "scan_right", "write": "0", "action": "RIGHT"}
-		],
-		"scan_right": [
-			{ "read" : ".", "to_state": "scan_left", "write": ".", "action": "LEFT"},
-			{ "read" : "0", "to_state": "scan_right", "write": "0", "action": "RIGHT"}
-		],
+        
 		"scan_left": [
 			{ "read" : "0", "to_state": "scan_left", "write": "0", "action": "LEFT"},
 			{ "read" : ".", "to_state": "ping", "write": ".", "action": "RIGHT"}
