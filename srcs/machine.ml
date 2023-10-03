@@ -6,7 +6,7 @@
 (*   By: clorin <clorin@student.42.fr>              +#+  +:+       +#+        *)
 (*                                                +#+#+#+#+#+   +#+           *)
 (*   Created: 2023/09/22 11:39:01 by clorin            #+#    #+#             *)
-(*   Updated: 2023/10/03 14:40:34 by clorin           ###   ########.fr       *)
+(*   Updated: 2023/10/03 15:37:41 by clorin           ###   ########.fr       *)
 (*                                                                            *)
 (* ************************************************************************** *)
 
@@ -232,7 +232,7 @@ let move_right (m : machine) : machine=
 
 let tape_to_string (m : machine) : string = 
   match m.tape with
-  | None -> failwith "No tape!";
+  | None -> "No tape!";
   | Some tap -> yellow^"["^reset^(pad_string_to_length (Tape.to_string tap) 30 m.blank)^yellow^"]"^reset
 
 let reload (m : machine) : machine =

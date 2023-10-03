@@ -24,9 +24,6 @@
             {"read": "0", "to_state": "q3", "write": "0", "action": "LEFT"},
             {"read": "1", "to_state": "q3", "write": "1", "action": "LEFT"},
             {"read": ".", "to_state": "HALT", "write": ".", "action": "RIGHT"}
-        ],
-        "HALT": [
-            {"read": ".", "to_state": "HALT", "write": ".", "action": "LEFT"}
         ]
     }
 }

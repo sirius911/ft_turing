@@ -6,22 +6,21 @@
 #    By: clorin <clorin@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/07/25 11:25:31 by clorin            #+#    #+#              #
-#    Updated: 2023/09/27 09:34:30 by clorin           ###   ########.fr        #
+#    Updated: 2023/10/03 14:56:48 by clorin           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-RESULT = ft_turing
+all	:
+	dune build
+	ln -sf _build/default/srcs/main.exe ft_turing
 
-SOURCES = 	srcs/types.ml \
-			srcs/colors.ml \
-			srcs/utils.ml \
-			srcs/tape.mli \
-			srcs/tape.ml \
-			srcs/parsing.ml \
-			srcs/machine.mli \
-			srcs/machine.ml \
-			srcs/interactive_mode.ml \
-			srcs/main.ml
-LIBS = yojson
-OCAMLMAKEFILE = OCamlMakefile
-include $(OCAMLMAKEFILE)
+run : all
+	./ft_turing
+
+clean :
+	rm -f ./ft_turing
+
+fclean : clean
+		dune clean
+
+re :	fclean all

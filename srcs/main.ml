@@ -6,7 +6,7 @@
 (*   By: clorin <clorin@student.42.fr>              +#+  +:+       +#+        *)
 (*                                                +#+#+#+#+#+   +#+           *)
 (*   Created: 2023/09/22 10:07:20 by clorin            #+#    #+#             *)
-(*   Updated: 2023/10/03 14:16:25 by clorin           ###   ########.fr       *)
+(*   Updated: 2023/10/03 15:50:25 by clorin           ###   ########.fr       *)
 (*                                                                            *)
 (* ************************************************************************** *)
 
@@ -45,6 +45,7 @@ let main_run_complex (jsonfile:string) (input:string) : int =
   | _ -> result
 
 let main_run (jsonfile:string) (input:string) : int =
+
   let result =
     try
       match Machine.create jsonfile true with
@@ -75,7 +76,7 @@ let process_command_line_args (args : string list) : int =
     | "-i" :: jsonfile :: input :: _ -> Interactive_mode.main_interactive_mode jsonfile input
     | "-i" :: jsonfile :: _  -> Interactive_mode.main_interactive_mode jsonfile ""
     | jsonfile :: input :: _ -> main_run jsonfile input
-    | _ -> print_string (usage_string()); 1
+    | _ -> print_string (usage_string()); 0
 
 let () =
   let args = Array.to_list Sys.argv in

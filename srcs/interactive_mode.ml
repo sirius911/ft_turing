@@ -6,7 +6,7 @@
 (*   By: clorin <clorin@student.42.fr>              +#+  +:+       +#+        *)
 (*                                                +#+#+#+#+#+   +#+           *)
 (*   Created: 2023/09/15 10:04:02 by clorin            #+#    #+#             *)
-(*   Updated: 2023/09/27 09:30:32 by clorin           ###   ########.fr       *)
+(*   Updated: 2023/10/03 16:01:43 by clorin           ###   ########.fr       *)
 (*                                                                            *)
 (* ************************************************************************** *)
 
@@ -22,10 +22,11 @@ let info (m : machine) (verbose : bool) : string =
       else if Machine.is_valid m then green ^ "ACTIVE" ^ reset
       else red ^ "NOT VALID" ^ reset
     in
-    if not verbose then Machine.tape_to_string m ^ " => " ^ state_str
+    if not verbose then 
+      Machine.tape_to_string m ^ " => " ^ state_str
     else
-      "\n" ^ blue ^ "Machine" ^ reset ^ "{" ^ Machine.get_name m ^ "} -> state = '"
-      ^ state_str ^ "', tape => " ^ Machine.tape_to_string m ^ " => " ^ state_str
+      "\n" ^ blue ^ "Machine" ^ reset ^ "{" ^ (Machine.get_name m) ^ "} -> state = '"
+      ^ state_str ^ "', tape => " ^ (Machine.tape_to_string m) ^ " => " ^ state_str
 
 
 let show_commands () : string =
@@ -100,7 +101,7 @@ let rec command_loop (m : machine) (refresh: bool): int =
     command_loop m false
   
 let main_interactive_mode (jsonfile: string) (input: string) : int =
-  Printf.printf "%sInteractive Mode%s (%s)(%s) : tape commands for help.\n" "blue" "reset" jsonfile input;
+  Printf.printf "%sInteractive Mode%s (%s)(%s) : tape commands for help.\n" blue reset jsonfile input;
   let m =
     match jsonfile with
     | "" -> Machine.create_empty_machine()
