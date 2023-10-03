@@ -6,7 +6,7 @@
 (*   By: clorin <clorin@student.42.fr>              +#+  +:+       +#+        *)
 (*                                                +#+#+#+#+#+   +#+           *)
 (*   Created: 2023/09/22 10:07:20 by clorin            #+#    #+#             *)
-(*   Updated: 2023/10/03 15:50:25 by clorin           ###   ########.fr       *)
+(*   Updated: 2023/10/03 16:12:43 by clorin           ###   ########.fr       *)
 (*                                                                            *)
 (* ************************************************************************** *)
 
@@ -28,7 +28,7 @@ let usage_string () : string =
 let main_run_complex (jsonfile:string) (input:string) : int =
   let result =
     try
-      match Machine.create jsonfile true with
+      match Machine.create jsonfile false with
       | Some m ->
         let m_with_tape = Machine.add_tape m input in
         Machine.run m_with_tape
@@ -42,7 +42,7 @@ let main_run_complex (jsonfile:string) (input:string) : int =
 
   match result with
   | x when x <= 0 -> exit(1)
-  | _ -> result
+  | _ -> print_int result; 0
 
 let main_run (jsonfile:string) (input:string) : int =
 
