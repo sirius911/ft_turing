@@ -6,11 +6,11 @@
 (*   By: clorin <clorin@student.42.fr>              +#+  +:+       +#+        *)
 (*                                                +#+#+#+#+#+   +#+           *)
 (*   Created: 2023/09/13 11:00:06 by clorin            #+#    #+#             *)
-(*   Updated: 2023/09/27 09:28:30 by clorin           ###   ########.fr       *)
+(*   Updated: 2023/10/03 09:54:56 by clorin           ###   ########.fr       *)
 (*                                                                            *)
 (* ************************************************************************** *)
 
-open Colors
+(* open Colors *)
 
 module Tape = 
 struct

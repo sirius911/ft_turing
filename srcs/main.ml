@@ -6,11 +6,12 @@
 (*   By: clorin <clorin@student.42.fr>              +#+  +:+       +#+        *)
 (*                                                +#+#+#+#+#+   +#+           *)
 (*   Created: 2023/09/22 10:07:20 by clorin            #+#    #+#             *)
-(*   Updated: 2023/09/28 10:05:17 by clorin           ###   ########.fr       *)
+(*   Updated: 2023/10/03 14:16:25 by clorin           ###   ########.fr       *)
 (*                                                                            *)
 (* ************************************************************************** *)
 
-open Colors
+open Ft_turing
+open Ft_turing.Colors
 
 let usage_string () : string =
   let usage =

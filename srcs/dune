@@ -1,0 +1,10 @@
+(library
+ (public_name ft_turing)
+ (modules types colors utils tape parsing machine interactive_mode)
+ (libraries yojson))
+
+(executable 
+ (public_name main)
+ (modules main)
+ (libraries ft_turing))
+
