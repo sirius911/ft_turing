@@ -1,4 +1,4 @@
-(lang dune 3.10)
+(lang dune 3.9)
 
 (name ft_turing)
 
@@ -17,10 +17,12 @@
 
 (package
  (name ft_turing)
- (synopsis "A short synopsis")
- (description "A longer description")
- (depends ocaml dune yojson)
- (tags
-  (topics "to describe" your project)))
-
-; See the complete stanza docs at https://dune.readthedocs.io/en/stable/dune-files.html#dune-project
+ (synopsis "Turing machine interpreter")
+ (description "An interpreter for Turing machines defined in .json files.")
+ (depends
+  (ocaml
+   (>= 4.08))
+  (dune
+   (>= 2.8))
+  (yojson
+   (>= 1.7.0))))
