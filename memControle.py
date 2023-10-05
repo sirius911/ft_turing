@@ -4,22 +4,22 @@ import psutil
 import matplotlib.pyplot as plt
 import time
 
-# Fonction pour récupérer le PID du processus "ft_turing"
+# Fonction pour récupérer le PID du processus "ft_turing" ou "main.exe"
 def get_pid_by_name(process_name):
     print(f"En attente du processus '{process_name}'...")
     while True:
-        for process in psutil.process_iter(attrs=['pid', 'name']):
-            if process.info['name'] == process_name:
-                return process.info['pid']
-        time.sleep(1)  # Attendre une seconde si le processus n'est pas encore démarré
+        for process in psutil.process_iter(attrs=['pid', 'name', 'exe']):
+            if (process.info['exe']):
+                if process.info['name'] == process_name or (process.info['exe'] and os.path.basename(process.info['exe']) == 'main.exe'):
+                    return process.info['pid']
+        time.sleep(1)
 
-# Fonction pour exécuter la commande "pmap" et récupérer la quantité de mémoire
+# Fonction pour obtenir la quantité de mémoire utilisée par le processus
 def get_memory_usage(pid):
-    cmd = f'pmap {pid} | grep "total"'
-    result = subprocess.check_output(cmd, shell=True, text=True)
-    memory_str = result.split()[1]  # Extrait la quantité de mémoire (en KB)
-    memory_str = memory_str.rstrip('K')  # Supprime le "K" à la fin de la chaîne
-    return float(memory_str) / 1024  # Convertit en MB et retourne un flottant
+    process = psutil.Process(pid)
+    memory_info = process.memory_info()
+    memory_usage = memory_info.rss / (1024 * 1024)  # Convertit en MB
+    return memory_usage
 
 if __name__ == "__main__":
     process_name = "ft_turing"
@@ -36,11 +36,11 @@ if __name__ == "__main__":
             start_time = time.time()
             while True:
                 if not psutil.pid_exists(pid):
-                    print(f"Le processus '{process_name}' n'existe plus. Arrêt de la surveillance.")
+                    print(f"\nLe processus '{process_name}' n'existe plus. Arrêt de la surveillance.")
                     break
                 memory_usage = get_memory_usage(pid)
                 memory_usage_history.append(memory_usage)
-                print(".", end='')
+                print(".", end='', flush = True)
                 # Calcul du temps écoulé en secondes
                 elapsed_time = time.time() - start_time
                 time_history.append(elapsed_time)
