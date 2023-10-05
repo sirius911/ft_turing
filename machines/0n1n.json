@@ -92,9 +92,6 @@
             {"read" : "n", "to_state": "HALT", "write": "n", "action": "RIGHT"},
             {"read" : ".", "to_state": "HALT", "write": "n", "action": "LEFT"},
             {"read" : "y", "to_state": "HALT", "write": "y", "action": "LEFT"}
-        ],
-        "HALT":[
-            {"read" : "y", "to_state": "HALT", "write": "y", "action": "LEFT"}
         ]
     }
 }
