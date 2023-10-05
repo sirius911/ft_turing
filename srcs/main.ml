@@ -6,7 +6,7 @@
 (*   By: clorin <clorin@student.42.fr>              +#+  +:+       +#+        *)
 (*                                                +#+#+#+#+#+   +#+           *)
 (*   Created: 2023/09/22 10:07:20 by clorin            #+#    #+#             *)
-(*   Updated: 2023/10/03 16:12:43 by clorin           ###   ########.fr       *)
+(*   Updated: 2023/10/05 15:45:41 by clorin           ###   ########.fr       *)
 (*                                                                            *)
 (* ************************************************************************** *)
 
@@ -20,7 +20,7 @@ let usage_string () : string =
                     jsonfile         description of the machine\n\
                     input            input of the machine\n\
                     -h, --help       show this help message and exit\n\
-                    -c, --complex    calculate complexity of jsonfile\n\
+                    -c               return num of operations\n\
                     -i [jsonfile] [input] -> Mode Interactive with commands:\n"
   in
   usage
