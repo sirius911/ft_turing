@@ -79,11 +79,19 @@ etat q3: on remonte :
 ## UTM_xxx
 Pseudo UTM 
 
-## gerenator_cmd.py
-Programme python qui donne l'input pour une UTM en fournissant une machine de turing par le fichier json. Exemple :
+## gerenator_cmd.py *
+Programme python qui donne l'input pour une UTM en fournissant une machine de turing par le fichier json. 
+Exemple :
+```shell
 python3 generator_cmd.py machines/unary_add.json
+```
 
-## generatorUTM.py
+## generatorUTM.py *
 Generateur du fichier json d'un pseudo UTM. exemple :
-python3 generatorUTN machines/unary_add.json  
+```shell
+python3 generatorUTN machines/unary_add.json
+```
+
 --> ecrit le fichier UTM_unary-add.json pour une UTM et affiches l'input
+
+largely inspired by [Mikhail Pasechnik](https://github.com/MikhailPasechnik) 's codes !
