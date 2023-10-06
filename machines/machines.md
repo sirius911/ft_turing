@@ -81,6 +81,56 @@ etat q3: on remonte :
 
 ## UTM_xxx
 Pseudo UTM 
+Alphabet, states, transitions and machine input ARE machine input.
+
+All machine states have been renamed with a capital letter [A, B, etc.].
+the pseudo MU input format is :
+
+| Example | A&A{[0C>.][...]}:0011 |
+|:-------------------|:-----------------|
+| A | Initial state |
+|**&** | |
+| A | State |
+| **{** | *start of transition list for state A* |
+| **[** | *transition* |
+| 0 | *'alphabet character read'* |
+| C | *New State* |
+| > | *for the direction of the read head* |
+| . | *'alphabet character written'* |
+| **]** | *end of transition* |
+| **[** | *transition* | 
+| ... | ...|
+| **]** | *end of transition* |
+| **}** | *end of transitions for state A* |
+| **:** | *start of input* |
+| 0011 | *input* |
+
+
+#### UTM_unary_add.json
+A machine able to run the machine (unary_add), an unary addition.
+exemple commands : 
+```bash
+'A&A{[1A>1][+B>.][.Z>.]}B{[1C<+][.Z<.]}C{[.A>1]}:111+1'
+```
+
+#### UTM_unary_sub.json
+A machine able to run the machine (unary_sub), an unary subtraction.
+exemple commands : 
+```bash
+'A&A{[.A>.][1A>1][-A>-][=B<.]}B{[1C<=][-Z<.]}C{[1C<1][-D<-]}D{[.D<.][1A>.]}:111-11='
+```
+#### UTM_0n1n.json
+A machine able to run the machine (0n1n).
+exemple commands : 
+```bash
+'A&A{[0F>?][1N>1]}B{[1C<!][?N>0][0I<0]}C{[1C<1][.C<.][0D>0][?G>?]}D{[1E<.][.D>.][!I<!]}E{[0C<.][.E<.]}F{[1F>1][0F>0][.B<.]}G{[.G>.][!H>!][1I>1]}H{[.I<y]}I{[.J<1][!I<!][1I<1][0I<0][?N>0]}J{[?K>?][0K>0][.J<.]}K{[.L>0]}L{[.L>.][1L>1][!I<!]}M{[1M>1][0M>0][.M>.][!H>!]}N{[1N>1][0N>0][!N>1][nZ>n][.Z<n][yZ<y]}:0011'
+```
+#### UTM_0n12n.json
+A machine able to run the machine (0n12n), an unary subtraction.
+exemple commands : 
+```
+'A&A{[0B>X][YE>Y][1Z>n][.Z>n]}B{[0B>0][YB>Y][1C>Y][.Z<n]}C{[1D<Y][.Z<n]}D{[0D<0][YD<Y][XA>X]}E{[YE>Y][.Z>y][1Z>n]}:001111'
+```
 
 ## gerenator_cmd.py *
 Programme python qui donne l'input pour une UTM en fournissant une machine de turing par le fichier json. 
