@@ -6,7 +6,7 @@
 (*   By: clorin <clorin@student.42.fr>              +#+  +:+       +#+        *)
 (*                                                +#+#+#+#+#+   +#+           *)
 (*   Created: 2023/09/22 11:39:01 by clorin            #+#    #+#             *)
-(*   Updated: 2023/10/03 15:37:41 by clorin           ###   ########.fr       *)
+(*   Updated: 2023/10/06 15:07:21 by clorin           ###   ########.fr       *)
 (*                                                                            *)
 (* ************************************************************************** *)
 
@@ -189,8 +189,7 @@ let add_tape (m : machine) (str : string) : machine =
   | _ ->
     let new_tape = Tape.create str m.blank in
     {
-      m with
-      tape = Some new_tape;
+      m with tape = Some new_tape;
     }
 
 let get_state (m : machine) : string = 
@@ -204,15 +203,15 @@ let read_head_tape (m : machine) : char =
   | Some tap -> Tape.read_head tap
   | None -> failwith "No tape"
 
-  let get_transition (m : machine) : (char * direction * string) =
-    let trans_state = find_transition (m.transitions) (m.state) in
-    let read_ = read_head_tape m in
-    let is_equal (transition : transition) (char_to_match : char) : bool =
-      transition.read = char_to_match
-    in
-    match List.find_opt (fun trans -> is_equal trans read_) trans_state with
-    | Some tt -> (tt.write, tt.action, tt.to_state)
-    | None -> failwith ("'" ^ (String.make 1 read_) ^ "' Not Found in " ^ m.state)
+let get_transition (m : machine) : (char * direction * string) =
+  let trans_state = find_transition (m.transitions) (m.state) in
+  let read_ = read_head_tape m in
+  let is_equal (transition : transition) (char_to_match : char) : bool =
+    transition.read = char_to_match
+  in
+  match List.find_opt (fun trans -> is_equal trans read_) trans_state with
+  | Some tt -> (tt.write, tt.action, tt.to_state)
+  | None -> failwith ("'" ^ (String.make 1 read_) ^ "' Not Found in " ^ m.state)
   
 
 let print_transition_info (m : machine) : unit = 
