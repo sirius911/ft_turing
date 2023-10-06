@@ -15,6 +15,9 @@ A machine able to decide whether its input is a palindrome or not. Before haltin
 write the result on the tape as a ’n’ or a ’y’ at the right of the rightmost character
 of the tape.
 
+![palindrome](https://github.com/sirius911/ft_turing/assets/25301163/d292b8dc-641f-43cc-a539-c7867222a85d)
+
+
 ## 0n1n
 A machine able to decide if the input is a word of the language 0n1n, for instance
 the words 000111 or 0000011111. Before halting, write the result on the tape as a
