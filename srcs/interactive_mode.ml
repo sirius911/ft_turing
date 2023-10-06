@@ -6,7 +6,7 @@
 (*   By: clorin <clorin@student.42.fr>              +#+  +:+       +#+        *)
 (*                                                +#+#+#+#+#+   +#+           *)
 (*   Created: 2023/09/15 10:04:02 by clorin            #+#    #+#             *)
-(*   Updated: 2023/10/03 16:01:43 by clorin           ###   ########.fr       *)
+(*   Updated: 2023/10/06 10:57:53 by clorin           ###   ########.fr       *)
 (*                                                                            *)
 (* ************************************************************************** *)
 
@@ -19,14 +19,14 @@ let info (m : machine) (verbose : bool) : string =
     let state_str =
       if Machine.is_stopped m then red ^ "STOPPED" ^ reset
       else if not (Machine.have_tape m) then yellow ^ "NO TAPE" ^ reset
-      else if Machine.is_valid m then green ^ "ACTIVE" ^ reset
+      else if Machine.is_valid m then green ^(Machine.get_state m)^ reset
       else red ^ "NOT VALID" ^ reset
     in
     if not verbose then 
       Machine.tape_to_string m ^ " => " ^ state_str
     else
       "\n" ^ blue ^ "Machine" ^ reset ^ "{" ^ (Machine.get_name m) ^ "} -> state = '"
-      ^ state_str ^ "', tape => " ^ (Machine.tape_to_string m) ^ " => " ^ state_str
+      ^blue^(Machine.get_state m)^reset^ "', tape => " ^ (Machine.tape_to_string m) ^ " => " ^ state_str
 
 
 let show_commands () : string =
