@@ -6,7 +6,7 @@
 (*   By: clorin <clorin@student.42.fr>              +#+  +:+       +#+        *)
 (*                                                +#+#+#+#+#+   +#+           *)
 (*   Created: 2023/09/22 11:39:01 by clorin            #+#    #+#             *)
-(*   Updated: 2023/10/06 15:07:21 by clorin           ###   ########.fr       *)
+(*   Updated: 2023/10/09 14:06:05 by clorin           ###   ########.fr       *)
 (*                                                                            *)
 (* ************************************************************************** *)
 
@@ -51,7 +51,10 @@ let create (file: string) (_verbose : bool) :machine option =
   try
     let json = Yojson.Basic.from_file file in
     let _alphabet = Parsing.get_alphabet(json) in
-    let _blank = (Parsing.get_string_json(json) "blank").[0] in
+    let _blank_str = (Parsing.get_string_json(json) "blank") in
+    if String.length _blank_str > 1 then
+      failwith ("Blank caractere must be a char.");
+    let _blank = _blank_str.[0] in
     if List.mem _blank _alphabet = false then
       failwith ("Blank caractere '"^(String.make 1 _blank)^"' must be part of Alphabet list.");
     let _states = Parsing.get_list_string_json (json) "states" in
@@ -103,8 +106,7 @@ let create (file: string) (_verbose : bool) :machine option =
               | _ -> failwith "Invalid 'action' value in transition")
             | _ -> failwith ("Invalid or missing 'action' key in transition of state : " ^ state)
           in
-          if !found_halt_state = false && List.mem to_state _finals then
-            found_halt_state := true;
+          found_halt_state := !found_halt_state || List.mem to_state _finals ;
           { read; to_state; write; action }
         )
       in
@@ -129,7 +131,7 @@ let create (file: string) (_verbose : bool) :machine option =
     } 
   with
   | Yojson.Json_error msg -> Printf.printf "Error parsing JSON: %s\n" msg; None
-  | ex -> Printf.printf "%sKOO\nError: %s%s\n" red (Printexc.to_string ex) reset; None
+  | ex -> Printf.printf "%sKO\nError: %s%s\n" red (Printexc.to_string ex) reset; None
 
 let is_valid (m : machine) : bool =
   m.valid
