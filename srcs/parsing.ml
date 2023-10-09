@@ -6,11 +6,12 @@
 (*   By: clorin <clorin@student.42.fr>              +#+  +:+       +#+        *)
 (*                                                +#+#+#+#+#+   +#+           *)
 (*   Created: 2023/09/22 12:50:41 by clorin            #+#    #+#             *)
-(*   Updated: 2023/09/28 09:56:58 by clorin           ###   ########.fr       *)
+(*   Updated: 2023/10/09 15:42:04 by clorin           ###   ########.fr       *)
 (*                                                                            *)
 (* ************************************************************************** *)
 
 open Yojson.Basic.Util
+open Types
 
 let get_string_json (json) (search_chain : string) : string = 
     let chain_json = json |> member search_chain in
@@ -47,7 +48,7 @@ let get_list_string_json (json) (search_chain : string) : string list =
                 | _ -> failwith ("Invalid element in "^search_chain)
             ) elements
 
-let get_transitions json = 
+let get_transitions json =
         let json_member = json |> member "transitions" in
         match json_member with
         | `Null -> failwith "Transitions field is null."
@@ -57,3 +58,56 @@ let get_transitions json =
             else
               assoc
         | _ -> failwith "Invalid format for transitions field in JSON"
+
+let fill_transitions json nb_state =
+    let _transitions = Hashtbl.create nb_state in
+    let transitions_json = get_transitions(json) in
+    List.iter (fun (state, trans_list) ->
+      let transitions_list =
+        trans_list |> to_list |> List.map (fun trans ->
+          let read : char =
+            match trans |> member "read" with
+            | `String read_str when String.length read_str = 1 -> read_str.[0]
+            | _ -> failwith ("Invalid or missing 'read' key in transition of state : " ^ state)
+          in
+          let to_state : string=
+            match trans |> member "to_state" with
+            | `String to_state_str -> to_state_str
+            | _ -> failwith ("Invalid or missing 'to_state' key in transition of state : " ^ state)
+          in
+          let write : char =
+            match trans |> member "write" with
+            | `String write_str when String.length write_str = 1 -> write_str.[0]
+            | _ -> failwith ("Invalid or missing 'write' key in transition of state : " ^ state)
+          in
+          let action =
+            match trans |> member "action" with
+            | `String action_str ->
+              (match action_str with
+              | "LEFT" -> LEFT
+              | "RIGHT" -> RIGHT
+              | _ -> failwith "Invalid 'action' value in transition")
+            | _ -> failwith ("Invalid or missing 'action' key in transition of state : " ^ state)
+          in
+          { read; to_state; write; action }
+        )
+      in
+      Hashtbl.add _transitions state transitions_list
+    ) transitions_json;
+  _transitions
+
+let parser json = 
+  let _blank_str = (get_string_json(json) "blank") in
+  if String.length _blank_str > 1 then
+    failwith ("Blank caractere must be a char.");
+  let _blank = _blank_str.[0] in
+  let _states = get_list_string_json (json) "states" in
+  (
+    get_string_json(json) "name",
+    get_alphabet json,
+    _blank,
+    _states,
+    get_string_json(json) "initial",
+    get_list_string_json (json) "finals",
+    fill_transitions json (List.length _states)
+  )
