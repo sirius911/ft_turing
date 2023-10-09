@@ -6,7 +6,7 @@
 (*   By: clorin <clorin@student.42.fr>              +#+  +:+       +#+        *)
 (*                                                +#+#+#+#+#+   +#+           *)
 (*   Created: 2023/09/15 10:04:02 by clorin            #+#    #+#             *)
-(*   Updated: 2023/10/06 10:57:53 by clorin           ###   ########.fr       *)
+(*   Updated: 2023/10/09 21:45:12 by clorin           ###   ########.fr       *)
 (*                                                                            *)
 (* ************************************************************************** *)
 
@@ -75,8 +75,7 @@ let rec command_loop (m : machine) (refresh: bool): int =
         let () = ignore (Machine.run m) in
         command_loop m false
       | "step" -> command_loop (Machine.step m) false
-      | "transition" ->
-        let () = Machine.print_transition_info m in
+      | "transition" -> print_endline (Machine.print_transition_info m);
         command_loop m false
       | "state" ->
         Printf.printf "Actual state is %s%s%s\n" yellow (Machine.get_state m) reset;

@@ -6,11 +6,16 @@
 (*   By: clorin <clorin@student.42.fr>              +#+  +:+       +#+        *)
 (*                                                +#+#+#+#+#+   +#+           *)
 (*   Created: 2023/09/11 10:04:52 by clorin            #+#    #+#             *)
-(*   Updated: 2023/09/25 14:20:29 by clorin           ###   ########.fr       *)
+(*   Updated: 2023/10/09 21:22:01 by clorin           ###   ########.fr       *)
 (*                                                                            *)
 (* ************************************************************************** *)
 
 open Types
+
+let verboser (str:string) (verbose:bool): unit =
+  match verbose with
+  | true -> print_string(str)
+  | false -> ()
 
 let print_list_string (liste: string list) (label: string) : unit =
   let formatted_list = List.map (fun s -> "\"" ^ s ^ "\"") liste in

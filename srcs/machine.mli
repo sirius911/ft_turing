@@ -14,7 +14,7 @@ val is_valid : machine -> bool
 val read_head_tape : machine -> char
 val print_transitions_for_state : machine -> string -> unit
 val get_transition : machine -> (char * direction * string)
-val print_transition_info : machine -> unit
+val print_transition_info : machine -> string
 val get_state : machine -> string
 val get_name : machine-> string
 val move_left : machine -> machine

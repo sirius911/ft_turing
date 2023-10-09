@@ -6,14 +6,13 @@
 (*   By: clorin <clorin@student.42.fr>              +#+  +:+       +#+        *)
 (*                                                +#+#+#+#+#+   +#+           *)
 (*   Created: 2023/09/22 11:39:01 by clorin            #+#    #+#             *)
-(*   Updated: 2023/10/09 19:15:54 by clorin           ###   ########.fr       *)
+(*   Updated: 2023/10/09 21:48:30 by clorin           ###   ########.fr       *)
 (*                                                                            *)
 (* ************************************************************************** *)
 
 open Types
 open Colors
 open Tape
-(* open Yojson.Basic.Util *)
 open Utils
 
 type machine= {
@@ -84,28 +83,26 @@ let validation (a:char list) (b:char) (s:string list) (i:string) (f:string list)
   
 let create (file: string) (_verbose : bool) :machine option =
   if file = "" then failwith "empty input";
-  if _verbose then Printf.printf "Loading \"%s%s%s\" ... " yellow file reset;
+  verboser ("Loading "^yellow^file^reset^" ... ") _verbose;
   try
     let json = Yojson.Basic.from_file file in
     let (n,a,b,s,i,f,t) = Parsing.parser json in
-    if validation (a) (b) (s) (i) (f) (t) then
-      (if _verbose then 
-        Printf.printf " %s%s%s\n" green "Ok" reset;
+    match (validation (a) (b) (s) (i) (f) (t)) with
+    | true -> verboser (" "^green^"Ok"^reset) _verbose;
       Some{
-        verbose = _verbose;
-        name = n;
-        alphabet = a;
-        blank = b;
-        states = s;
-        initial = i;
-        finals = f;
-        transitions = t;
-        valid = true;
-        tape = None;
-        state = i;
-      })
-    else
-      None
+          verbose = _verbose;
+          name = n;
+          alphabet = a;
+          blank = b;
+          states = s;
+          initial = i;
+          finals = f;
+          transitions = t;
+          valid = true;
+          tape = None;
+          state = i;
+        }
+    | false -> None
   with
   | Yojson.Json_error msg -> Printf.printf "Error parsing JSON: %s\n" msg; None
   | ex -> Printf.printf "%sKO\nError: %s%s\n" red (Printexc.to_string ex) reset; None
@@ -193,10 +190,10 @@ let get_transition (m : machine) : (char * direction * string) =
   | None -> failwith ("'" ^ (String.make 1 read_) ^ "' Not Found in " ^ m.state)
   
 
-let print_transition_info (m : machine) : unit = 
+let print_transition_info (m : machine) : string = 
   let read_ = read_head_tape m  in
   let (w, a, s) = get_transition m in
-  Printf.printf "(%s, %c) -> (%s, %c, %s)\n" m.state read_ s w (direction_to_string a)
+  "("^m.state^", "^(String.make 1 read_)^") -> ("^s^", "^(String.make 1 w)^", "^(direction_to_string a)^")\n"
 
 let move_left (m : machine) : machine =
   match m.tape with
@@ -231,9 +228,7 @@ let set_state (m : machine) (new_state : string) : machine =
 
 let step (m : machine) : machine =
   try  
-    if m.verbose then (
-      print_string (tape_to_string m);
-      print_transition_info m);
+    verboser ((tape_to_string m)^print_transition_info m) m.verbose;
     let (w, a, ns) = get_transition m in
     let new_machine = set_state m ns in
     match a with
@@ -246,16 +241,12 @@ let run (m: machine) : int =
   let rec loop (count: int) (machine: machine) =
     if not (is_valid machine) then
       (
-        if m.verbose then print_endline "No machine is valid";
+        verboser "No machine is valid\n" m.verbose;
         count
       )
     else if is_stopped machine then
       (
-        if m.verbose then (
-          let tap = Utils.pad_string_to_length (tape_to_string machine) 30 m.blank in
-          print_endline ("Ending -> " ^ tap);
-          Printf.printf "%d operation(s)\n" count
-        );
+        verboser ("Ending -> "^(Utils.pad_string_to_length (tape_to_string machine) 30 m.blank)^"\n"^string_of_int count^" operation(s)\n") m.verbose;
         count
       )
     else
