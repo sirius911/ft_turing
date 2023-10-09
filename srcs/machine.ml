@@ -6,7 +6,7 @@
 (*   By: clorin <clorin@student.42.fr>              +#+  +:+       +#+        *)
 (*                                                +#+#+#+#+#+   +#+           *)
 (*   Created: 2023/09/22 11:39:01 by clorin            #+#    #+#             *)
-(*   Updated: 2023/10/09 15:39:46 by clorin           ###   ########.fr       *)
+(*   Updated: 2023/10/09 19:15:54 by clorin           ###   ########.fr       *)
 (*                                                                            *)
 (* ************************************************************************** *)
 
@@ -87,73 +87,10 @@ let create (file: string) (_verbose : bool) :machine option =
   if _verbose then Printf.printf "Loading \"%s%s%s\" ... " yellow file reset;
   try
     let json = Yojson.Basic.from_file file in
-    (* let _alphabet = Parsing.get_alphabet(json) in *)
-    (* let _blank_str = (Parsing.get_string_json(json) "blank") in *)
-    (* if String.length _blank_str > 1 then
-      failwith ("Blank caractere must be a char."); *)
-    (* let _blank = _blank_str.[0] in *)
-    (* if List.mem _blank _alphabet = false then
-      failwith ("Blank caractere '"^(String.make 1 _blank)^"' must be part of Alphabet list."); *)
-    (* let _states = Parsing.get_list_string_json (json) "states" in *)
-    (* let _initial = Parsing.get_string_json(json) "initial" in *)
-    (* if List.mem _initial _states = false then
-      failwith "State initial must be part of State list."; *)
-    (* let _finals = Parsing.get_list_string_json (json) "finals" in *)
-    (* if not (List.for_all (fun final -> List.mem final _states) _finals) then
-      failwith "Finals states are not a subset of States list."; *)
-    (* let transitions_json = Parsing.get_transitions(json) in *)
-    (* let _transitions = Hashtbl.create (List.length _states) in *)
-    
-    (* Parse transitions *)
-    (* let found_halt_state = ref false in *)
-      
-    (* List.iter (fun (state, trans_list) ->
-      if not (List.mem state _states) then
-          failwith ("State '" ^ state ^ "' in transition not found in the list of states");
-
-      let transitions_list =
-        trans_list |> to_list |> List.map (fun trans ->
-          let read : char =
-            match trans |> member "read" with
-            | `String read_str when String.length read_str = 1 -> read_str.[0]
-            | _ -> failwith ("Invalid or missing 'read' key in transition of state : " ^ state)
-          in
-          if not(List.mem read _alphabet) then
-            failwith ("read character '"^(String.make 1 read) ^ "' not in alphabet.");
-          let to_state : string=
-            match trans |> member "to_state" with
-            | `String to_state_str -> to_state_str
-            | _ -> failwith ("Invalid or missing 'to_state' key in transition of state : " ^ state)
-          in
-          if not(List.mem to_state _states) then
-            failwith ("'" ^ to_state ^ "' not in State list.");
-          let write : char =
-            match trans |> member "write" with
-            | `String write_str when String.length write_str = 1 -> write_str.[0]
-            | _ -> failwith ("Invalid or missing 'write' key in transition of state : " ^ state)
-          in
-          if not(List.mem write _alphabet) then
-            failwith ("write character '" ^ (String.make 1 write) ^ "' not in alphabet.");
-          let action =
-            match trans |> member "action" with
-            | `String action_str ->
-              (match action_str with
-              | "LEFT" -> LEFT
-              | "RIGHT" -> RIGHT
-              | _ -> failwith "Invalid 'action' value in transition")
-            | _ -> failwith ("Invalid or missing 'action' key in transition of state : " ^ state)
-          in
-          found_halt_state := !found_halt_state || List.mem to_state _finals ;
-          { read; to_state; write; action }
-        )
-      in
-      Hashtbl.add _transitions state transitions_list
-    ) transitions_json; *)
     let (n,a,b,s,i,f,t) = Parsing.parser json in
-    if _verbose then Printf.printf " %s%s%s\n" green "Ok" reset;
-    (* if !found_halt_state = false then
-      Printf.printf "%sWarning%s The list of transitions doesn't seem to have any stop states.\n" yellow reset; *)
     if validation (a) (b) (s) (i) (f) (t) then
+      (if _verbose then 
+        Printf.printf " %s%s%s\n" green "Ok" reset;
       Some{
         verbose = _verbose;
         name = n;
@@ -166,7 +103,7 @@ let create (file: string) (_verbose : bool) :machine option =
         valid = true;
         tape = None;
         state = i;
-      }
+      })
     else
       None
   with

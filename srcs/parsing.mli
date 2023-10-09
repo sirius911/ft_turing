@@ -1,0 +1,1 @@
+val parser : Yojson.Basic.t -> string * char list * char * string list * string * string list * (string, Types.transition list) Hashtbl.t
