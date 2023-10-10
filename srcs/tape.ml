@@ -6,7 +6,7 @@
 (*   By: clorin <clorin@student.42.fr>              +#+  +:+       +#+        *)
 (*                                                +#+#+#+#+#+   +#+           *)
 (*   Created: 2023/09/13 11:00:06 by clorin            #+#    #+#             *)
-(*   Updated: 2023/10/03 09:54:56 by clorin           ###   ########.fr       *)
+(*   Updated: 2023/10/10 16:23:13 by clorin           ###   ########.fr       *)
 (*                                                                            *)
 (* ************************************************************************** *)
 
@@ -54,7 +54,7 @@ struct
       | head :: tail ->
         let cell_str =
           if i = tape.tape_head then
-            Printf.sprintf "<%s%c%s>" "\x1b[31m" head "\x1b[0m"
+            Printf.sprintf "%s%c%s" "\x1b[31m" head "\x1b[0m"
           else
             String.make 1 head
         in

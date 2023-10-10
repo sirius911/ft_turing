@@ -6,7 +6,7 @@
 (*   By: clorin <clorin@student.42.fr>              +#+  +:+       +#+        *)
 (*                                                +#+#+#+#+#+   +#+           *)
 (*   Created: 2023/09/22 11:39:01 by clorin            #+#    #+#             *)
-(*   Updated: 2023/10/09 21:48:30 by clorin           ###   ########.fr       *)
+(*   Updated: 2023/10/10 16:28:00 by clorin           ###   ########.fr       *)
 (*                                                                            *)
 (* ************************************************************************** *)
 
@@ -246,7 +246,7 @@ let run (m: machine) : int =
       )
     else if is_stopped machine then
       (
-        verboser ("Ending -> "^(Utils.pad_string_to_length (tape_to_string machine) 30 m.blank)^"\n"^string_of_int count^" operation(s)\n") m.verbose;
+        verboser ((Utils.pad_string_to_length (tape_to_string machine) 30 m.blank)^"\n"^string_of_int count^" operation(s)\n") m.verbose;
         count
       )
     else
