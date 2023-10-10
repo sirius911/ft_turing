@@ -137,7 +137,7 @@ def get_docker():
         return None
     
 def usage():
-    print("Usage: complex.py <Machine name>\n\t <dico>:")
+    print("Usage: complex.py <Machine name>")
     for cle in dico.keys():
         print(f"\t[{cle}]")
 
