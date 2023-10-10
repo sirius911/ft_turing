@@ -17,6 +17,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 import sys
+import docker
 
 dico = {
     'unary_add': "{'1' * i}+{'1' * i}",
@@ -25,6 +26,7 @@ dico = {
     '0n1n': "{'0' * i}{'1' * i}",
     '0n12n': "{'0' * i}{'11' * i}",
     'X+1': "{'0' * i}{'1' * i}",
+    'palindrome': "{'0' * i}{'1' * i}",
 }
 
 def generate_input (pattern, max):
@@ -34,7 +36,7 @@ def generate_input (pattern, max):
         input_sizes.append(input_string)
     return input_sizes
 
-def calc_complex(machine, max=100):
+def calc_complex(container, machine, max=100):
     pattern = dico[machine]
     input_sizes = generate_input(pattern, max)
     # Initialiser une liste pour stocker les résultats (X, Y)
@@ -43,7 +45,14 @@ def calc_complex(machine, max=100):
         # Exécuter la machine de Turing avec l'entrée spécifiée
         command = f"./ft_turing -c machines/{machine}.json {input_size}"
         try:
-            output = subprocess.check_output(command, shell=True, text=True)
+            if (container):
+                exec_result = container.exec_run(command)
+                output = exec_result.output.decode("utf-8").strip()
+            else:
+                output = subprocess.check_output(command, shell=True, text=True)
+        except docker.errors.ContainerError as e:
+            print(f"Error during command execution : {e}")
+            exit(0)
         except subprocess.CalledProcessError as e:
             print(f"Erreur lors de l'exécution de la commande : {e}")
             exit(0)
@@ -88,24 +97,50 @@ def calc_complex(machine, max=100):
 
     plt.show()
 
-def check(json_file, machine):
+def check_machine(json_file, machine):
     if not(os.path.isfile(json_file)):
         print(f"{json_file} not found.")
-        return False
-    if not(os.path.islink('ft_turing')) or not(os.access('ft_turing', os.X_OK)):
-        print(f"'ft_turing' not found.")
         return False
     if machine not in dico:
         print(f"'{machine}' is not in dictionary to create input for this machine.")
         return False
     return (True)
 
+def check_ft_turing():
+    if not(os.path.islink('ft_turing')) or not(os.access('ft_turing', os.X_OK)):
+        print(f"'ft_turing' not found.")
+        exit(0)
+
+def check_docker(container):
+    command = "ls ./ft_turing"
+    try:
+        return_code = container.exec_run(command).exit_code
+        if (return_code != 0):
+            print(f"'ft_turing is not compiled, please compile in docker ")
+            exit(0)
+    except docker.errors.ContainerError as e:
+        print(f"Docker error when checking for the existence of 'ft_turing' in the container: {e}")
+        exit(0)
+    except Exception as e:
+        print(f"Unexpected error : {e}")
+        exit(0)
+
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: complex.py <json_file>")
+        print("Usage: complex.py <Machine name>")
         sys.exit(1)
     machine = sys.argv[1]
+    container = docker.from_env()
+    try:
+        container_turing = container.containers.get('turing')
+    except docker.errors.NotFound as e:
+        print(f"'turing' container Not Found.")
+        container_turing = None
+    if (container_turing):
+        check_docker(container_turing)
+    else:
+        check_ft_turing()
     path = f"machines/{machine}.json"
-    if check(path, machine):
-        calc_complex(machine)
+    if check_machine(path, machine):
+        calc_complex(container_turing, machine)
     print ("end")

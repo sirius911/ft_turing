@@ -19,6 +19,16 @@ to name a few.
 
 https://github.com/sirius911/ft_turing/blob/main/machines/machines.md
 
+## Build Docker Image
+To build de Docker image : 
+in docker_ocaml/
+run ./build.sh
+
+## to execute container : 
+./ocaml
+
+## Complex.py
+
 ### thks
 
 - https://github.com/RadioPotin
