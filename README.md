@@ -28,6 +28,14 @@ run ./build.sh
 ./ocaml
 
 ## Complex.py
+Usage: python3 complex.py <Machine name>
+        [unary_add]
+        [unary_sub]
+        [02n]
+        [0n1n]
+        [0n12n]
+        [X+1]
+        [palindrome]
 
 ### thks
 

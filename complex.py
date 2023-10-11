@@ -113,35 +113,49 @@ def check_ft_turing():
         print(f"'ft_turing' not found.")
         exit(0)
 
-def check_docker(container):
+def check_container(container):
     command = "ls ./ft_turing"
     try:
         return_code = container.exec_run(command).exit_code
         if (return_code != 0):
             print(f"'ft_turing is not compiled, please compile in docker ")
-            exit(0)
+            return False
+        else:
+            return True
     except docker.errors.ContainerError as e:
         print(f"Docker error when checking for the existence of 'ft_turing' in the container: {e}")
-        exit(0)
+        return False
     except Exception as e:
         print(f"Unexpected error : {e}")
-        exit(0)
+        return False
+
+def get_docker():
+    print("Searching container 'turing' ... ", end='')
+    try:
+        container = docker.from_env()
+        return(container.containers.get('turing'))
+    except docker.errors.NotFound as e:
+        print(f"Not Found.")
+        return None
+    
+def usage():
+    print("Usage: complex.py <Machine name>")
+    for cle in dico.keys():
+        print(f"\t[{cle}]")
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: complex.py <Machine name>")
-        sys.exit(1)
+        usage()
+        exit(1)
     machine = sys.argv[1]
-    container = docker.from_env()
-    try:
-        container_turing = container.containers.get('turing')
-    except docker.errors.NotFound as e:
-        print(f"'turing' container Not Found.")
-        container_turing = None
+    container_turing = get_docker()
     if (container_turing):
-        check_docker(container_turing)
+        print("Ok")
+        check_container(container_turing)
     else:
+        print("searching './ft_turing' ... ", end='')
         check_ft_turing()
+        print("Ok")
     path = f"machines/{machine}.json"
     if check_machine(path, machine):
         calc_complex(container_turing, machine)

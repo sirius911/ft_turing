@@ -6,7 +6,7 @@
 (*   By: clorin <clorin@student.42.fr>              +#+  +:+       +#+        *)
 (*                                                +#+#+#+#+#+   +#+           *)
 (*   Created: 2023/09/22 11:39:01 by clorin            #+#    #+#             *)
-(*   Updated: 2023/10/10 16:28:00 by clorin           ###   ########.fr       *)
+(*   Updated: 2023/10/10 22:28:57 by clorin           ###   ########.fr       *)
 (*                                                                            *)
 (* ************************************************************************** *)
 
@@ -88,7 +88,7 @@ let create (file: string) (_verbose : bool) :machine option =
     let json = Yojson.Basic.from_file file in
     let (n,a,b,s,i,f,t) = Parsing.parser json in
     match (validation (a) (b) (s) (i) (f) (t)) with
-    | true -> verboser (" "^green^"Ok"^reset) _verbose;
+    | true -> verboser (" "^green^"Ok"^reset^"\n") _verbose;
       Some{
           verbose = _verbose;
           name = n;
