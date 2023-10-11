@@ -1,0 +1,81 @@
+{
+    "name": "X+Y",
+    "alphabet": ["0", "1", ".", "+", "="],
+    "blank": ".",
+    "states": ["search_equal","q1_sub","last_0?","remove0","reverse_left","search_plus_left","scan_left","clean_left_zero","q0_add","q1_add","q2_add","q3_add","cleaning","HALT"],
+    "initial": "search_equal",
+    "finals": ["HALT"],
+    "transitions": {
+        "search_equal": [
+            {"read": "1", "to_state": "search_equal", "write": "1", "action": "RIGHT"},
+            {"read": "0", "to_state": "search_equal", "write": "0", "action": "RIGHT"},
+            {"read": "+", "to_state": "search_equal", "write": "+", "action": "RIGHT"},
+            {"read": ".", "to_state": "search_equal", "write": ".", "action": "RIGHT"},
+            {"read": "=", "to_state": "q1_sub", "write": "=", "action": "LEFT"}  
+        ],
+        "q1_sub": [
+            {"read": "0", "to_state": "reverse_left", "write": "1", "action": "LEFT"},
+            {"read": "1", "to_state": "last_0?", "write": "0", "action": "LEFT"},
+            {"read": ".", "to_state": "cleaning", "write": ".", "action": "RIGHT"}
+        ],
+        "last_0?": [
+            {"read": ".", "to_state": "remove0", "write": ".", "action": "RIGHT"},
+            {"read": "0", "to_state": "search_plus_left", "write": "0", "action": "LEFT"},
+            {"read": "1", "to_state": "search_plus_left", "write": "1", "action": "LEFT"},
+            {"read": "+", "to_state": "remove0", "write": "+", "action": "RIGHT"}
+        ],
+        "remove0": [
+            {"read": "0", "to_state": "search_plus_left", "write": ".", "action": "LEFT"}
+        ],
+        "reverse_left": [
+            {"read": "0", "to_state": "reverse_left", "write": "1", "action": "LEFT"},
+            {"read": "1", "to_state": "reverse_left", "write": "0", "action": "LEFT"},
+            {"read": ".", "to_state": "clean_left_zero", "write": ".", "action": "RIGHT"},
+            {"read": "+", "to_state": "clean_left_zero", "write": "+", "action": "RIGHT"}
+        ],
+        "clean_left_zero": [
+            {"read": "0", "to_state": "clean_left_zero", "write": ".", "action": "RIGHT"},
+            {"read": "1", "to_state": "search_plus_left", "write": "1", "action": "LEFT"},
+            {"read": ".", "to_state": "HALT", "write": ".", "action": "RIGHT"}
+        ],
+        "q0_add": [
+            {"read": "1", "to_state": "q0_add", "write": "1", "action": "RIGHT"},
+            {"read": "0", "to_state": "q0_add", "write": "0", "action": "RIGHT"},
+            {"read": "+", "to_state": "q1_add", "write": "+", "action": "LEFT"}  
+        ],
+        "q1_add": [
+            {"read": "0", "to_state": "q3_add", "write": "1", "action": "RIGHT"},
+            {"read": "1", "to_state": "q2_add", "write": "0", "action": "LEFT"}
+        ],
+        "q2_add": [
+            {"read": "1", "to_state": "q2_add", "write": "0", "action": "LEFT"},
+            {"read": ".", "to_state": "q3_add", "write": "1", "action":"RIGHT"},
+            {"read": "0", "to_state": "q3_add", "write": "1", "action":"RIGHT"}
+        ],
+        "q3_add": [
+            {"read": "0", "to_state": "q3_add", "write": "0", "action": "LEFT"},
+            {"read": "1", "to_state": "q3_add", "write": "1", "action": "LEFT"},
+            {"read": "+", "to_state": "search_equal", "write": "+", "action": "RIGHT"},
+            {"read": ".", "to_state": "search_equal", "write": ".", "action": "RIGHT"}
+        ],
+        "search_plus_left": [
+            {"read": "0", "to_state": "search_plus_left", "write": "0", "action": "LEFT"},
+            {"read": "1", "to_state": "search_plus_left", "write": "1", "action": "LEFT"},
+            {"read": ".", "to_state": "search_plus_left", "write": ".", "action": "LEFT"},
+            {"read": "+", "to_state": "scan_left", "write": "+", "action": "LEFT"}
+        ],
+        "scan_left": [
+            {"read": "0", "to_state": "scan_left", "write": "0", "action": "LEFT"},
+            {"read": "1", "to_state": "scan_left", "write": "1", "action": "LEFT"},
+            {"read": ".", "to_state": "q0_add", "write": ".", "action": "RIGHT"},
+            {"read": "+", "to_state": "HALT", "write": "+", "action": "RIGHT"}
+        ],
+        "cleaning": [
+            {"read": "=", "to_state": "cleaning", "write": ".", "action": "LEFT"},
+            {"read": ".", "to_state": "cleaning", "write": ".", "action": "LEFT"},
+            {"read": "+", "to_state": "cleaning", "write": ".", "action": "LEFT"},
+            {"read": "1", "to_state": "HALT", "write": "1", "action": "RIGHT"},
+            {"read": "0", "to_state": "HALT", "write": "0", "action": "RIGHT"}
+        ]
+    }
+}
