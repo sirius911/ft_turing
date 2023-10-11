@@ -78,6 +78,13 @@ etat q3: on remonte :
 
 ![X+1](https://github.com/sirius911/ft_turing/assets/25301163/2888e0d6-43b5-46ec-b728-6e2f854d8c5d)
 
+## X-1
+Same machine as 'X+1' but subtracts 1 from a binary number
+
+## X+Y
+Machine adding two binary numbers
+
+1010+11010=
 
 ## UTM_xxx
 Pseudo UTM 

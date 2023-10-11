@@ -2,7 +2,7 @@
     "name": "X-1",
     "alphabet": ["0", "1","."],
     "blank": ".",
-    "states": ["scan_right","q1","reverse_left","clean_left_zero","HALT"],
+    "states": ["scan_right","q1","q2","q3","reverse_left","clean_left_zero","HALT"],
     "initial": "scan_right",
     "finals": ["HALT"],
     "transitions": {
@@ -13,17 +13,25 @@
         ],
         "q1": [
             {"read": "0", "to_state": "reverse_left", "write": "1", "action": "LEFT"},
-            {"read": "1", "to_state": "HALT", "write": "0", "action": "RIGHT"}
+            {"read": "1", "to_state": "q2", "write": "0", "action": "LEFT"}
+        ],
+        "q2": [
+            {"read": "1", "to_state": "HALT", "write": "1", "action": "RIGHT"},
+            {"read": "0", "to_state": "HALT", "write": "0", "action": "RIGHT"},
+            {"read": ".", "to_state": "q3", "write": ".", "action": "RIGHT"} 
+        ],
+        "q3": [
+            {"read": "0", "to_state": "HALT", "write": ".", "action": "RIGHT"}
         ],
         "reverse_left": [
             {"read": "0", "to_state": "reverse_left", "write": "1", "action": "LEFT"},
-            {"read": "1", "to_state": "reverse_left", "write": "0", "action": "LEFT"},
-            {"read": ".", "to_state": "clean_left_zero", "write": ".", "action": "RIGHT"}
+            {"read": "1", "to_state": "q2", "write": "0", "action": "LEFT"},
+            {"read": ".", "to_state": "HALT", "write": ".", "action": "RIGHT"}
         ],
         "clean_left_zero": [
             {"read": "0", "to_state": "clean_left_zero", "write": ".", "action": "RIGHT"},
             {"read": "1", "to_state": "HALT", "write": "1", "action": "RIGHT"},
-            {"read": ".", "to_state": "HALT", "write": ".", "action": "RIGHT"}
+            {"read": ".", "to_state": "clean_left_zero", "write": ".", "action": "RIGHT"}
         ]
     }
 }

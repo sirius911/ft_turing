@@ -29,7 +29,7 @@
         ],
         "reverse_left": [
             {"read": "0", "to_state": "reverse_left", "write": "1", "action": "LEFT"},
-            {"read": "1", "to_state": "reverse_left", "write": "0", "action": "LEFT"},
+            {"read": "1", "to_state": "last_0?", "write": "0", "action": "LEFT"},
             {"read": ".", "to_state": "clean_left_zero", "write": ".", "action": "RIGHT"},
             {"read": "+", "to_state": "clean_left_zero", "write": "+", "action": "RIGHT"}
         ],
