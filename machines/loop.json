@@ -1,0 +1,22 @@
+{
+    "name": "Infinite machine (use 'loop' as input)",
+    "alphabet": ["l", "o", "p", "."],
+    "blank": ".",
+    "states": ["enter", "loopA", "loopB", "exit", "HALT"],
+    "initial": "enter",
+    "finals": ["HALT"],
+    "transitions": {
+        "enter": [
+            { "read": "l", "to_state": "loopA", "write": "l", "action": "RIGHT" }
+        ],
+        "loopA": [
+            { "read": "o", "to_state": "loopB", "write": "o", "action": "RIGHT" }
+        ],
+        "loopB": [
+            { "read": "o", "to_state": "loopA", "write": "o", "action": "LEFT" }
+        ],
+        "exit": [
+            { "read": "p", "to_state": "HALT", "write": "p", "action": "RIGHT" }
+        ]
+    }
+}
