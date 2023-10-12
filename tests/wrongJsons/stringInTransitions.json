@@ -1,0 +1,9 @@
+{
+    "name": "yes",
+    "alphabet": ["n", "y", "."],
+    "blank": ".",
+    "states": ["main", "HALT"],
+    "initial": "main",
+    "finals": ["HALT"],
+    "transitions": "Hello"
+}

@@ -57,3 +57,4 @@ class Test:
                 print(f"    Expected tape : [{self.expResult}]")
                 print(f"    Current tape  : [{getResultTape(programOutput)}]")
                 print(f"    Expected retCode : [{self.expCode}] ; Current tape [{getReturnCode(programOutput)}]")
+        return isSuccess

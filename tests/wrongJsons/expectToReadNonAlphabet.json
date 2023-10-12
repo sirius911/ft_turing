@@ -1,0 +1,15 @@
+{
+    "name": "yes",
+    "alphabet": ["n", "y", "."],
+    "blank": ".",
+    "states": ["main", "HALT"],
+    "initial": "main",
+    "finals": ["HALT"],
+    "transitions": {
+        "main": [
+            { "read": "T", "to_state": "main", "write": "y", "action": "RIGHT" },
+            { "read": "n", "to_state": "main", "write": "y", "action": "RIGHT" },
+            { "read": ".", "to_state": "HALT", "write": ".", "action": "RIGHT" }
+        ]
+    }
+}
