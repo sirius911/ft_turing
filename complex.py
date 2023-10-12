@@ -29,6 +29,7 @@ dico = {
     'X-1': "{'1' * i}{'0' * i}",
     'X+Y': "{'1' * i}{'0' * i}+{'1' * i}{'0' * i}=",
     'palindrome': "{'0' * i}{'1' * i}",
+    'palindrome_letters': "{'a' * i}{'b' * i}{'c' * i}",
 }
 
 def generate_input (pattern, max):
