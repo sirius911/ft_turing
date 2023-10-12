@@ -1,28 +1,39 @@
 #!/usr/bin/python3
 
 from test import Test
-from tests import jsonErrors, inputErrors, workingTests
 
-# Returns (testName, successNumber, numberOfTests)
-def runTests(tests: list) -> tuple:
-    amountOfSuccess = 0
-    lenTest = len(tests)
-    print(f"#################### {tests[0]} ####################")
-    for i in range(1, lenTest):
-        currState = tests[i].run(i)
-        if (currState == True):
-            amountOfSuccess += 1
-    print(f"#####################{'#' * len(tests[0])}#####################")
-    return (tests[0], amountOfSuccess, lenTest - 1)
+tests = [
+    Test(
+        description= "Simpliest functional test",
+        expCode= 13,
+        expResult= "yyyyyyyyyyyy.........",
+        errorStringToFind= "", # Empty because we do not expect this test to fail
+        machinePath="./machines/yes.json",
+        inputTape="ynynynnynyny"
+    ),
+    Test(
+        description= "Empty json",
+        expCode= 1,
+        expResult= "",
+        errorStringToFind= "Blank input data", # Empty because we do not expect this test to fail
+        machinePath="./tests/wrongJsons/empty.json",
+        inputTape="this_is_an_error"
+    ),
+    Test(
+        description= "Not well formated",
+        expCode= 1,
+        expResult= "",
+        errorStringToFind= "Error parsing JSON: Line 2, bytes 3-4:", # Empty because we do not expect this test to fail
+        machinePath="./tests/wrongJsons/notWellFormated.json",
+        inputTape="this_is_an_error"
+    ),
+]
 
 def main():
-    tests = [jsonErrors, inputErrors, workingTests]
-    results = []
+    print("---------------------------------------------")
     for i in range(0, len(tests)):
-        results.append(runTests(tests[i]))
-        print("")
-    for i in range(0, len(results)):
-        print(f"{results[i][0]} : {results[i][1]}/{results[i][2]} " + ("✅" if results[i][1] == results[i][2] else "❌"))
+        tests[i].run(i)
+        print("---------------------------------------------")
 
 if __name__ == "__main__":
     main()
