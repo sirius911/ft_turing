@@ -24,3 +24,6 @@ fclean : clean
 		rm -rf _build/
 
 re :	fclean all
+
+test : all
+	python3 ./tests/tester.py
