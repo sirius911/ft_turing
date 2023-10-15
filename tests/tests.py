@@ -82,4 +82,28 @@ workingTests = [
         machinePath="./machines/yes.json",
         inputTape="ynynynnynyny"
     ),
+    Test(
+        description= "on1n test success",
+        expCode= 29,
+        expResult= "0011y................",
+        errorStringToFind= "", # Empty because we do not expect this test to fail
+        machinePath="./machines/0n1n.json",
+        inputTape="0011"
+    ),
+    Test(
+        description= "on1n test fail",
+        expCode= 34,
+        expResult= "00111n...............",
+        errorStringToFind= "", # Empty because we do not expect this test to fail
+        machinePath="./machines/0n1n.json",
+        inputTape="00111"
+    ),
+    Test(
+        description= "palindrome success",
+        expCode= 34,
+        expResult= "00111n...............",
+        errorStringToFind= "", # Empty because we do not expect this test to fail
+        machinePath="./machines/0n1n.json",
+        inputTape="00111"
+    ),
 ]
