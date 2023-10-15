@@ -100,10 +100,34 @@ workingTests = [
     ),
     Test(
         description= "palindrome success",
-        expCode= 34,
-        expResult= "00111n...............",
+        expCode= 21,
+        expResult= "....Y................",
         errorStringToFind= "", # Empty because we do not expect this test to fail
-        machinePath="./machines/0n1n.json",
-        inputTape="00111"
+        machinePath="./machines/palindrome_letters.json",
+        inputTape="radar"
+    ),
+    Test(
+        description= "palindrome fail",
+        expCode= 18,
+        expResult= "..do.N...............",
+        errorStringToFind= "", # Empty because we do not expect this test to fail
+        machinePath="./machines/palindrome_letters.json",
+        inputTape="rador"
+    ),
+    Test(
+        description= "unary_add",
+        expCode= 11,
+        expResult= "11111................",
+        errorStringToFind= "", # Empty because we do not expect this test to fail
+        machinePath="./machines/unary_add.json",
+        inputTape="111+11"
+    ),
+    Test(
+        description= "unary_add",
+        expCode= 144, # normaly 1168 but modulo 256
+        expResult= "A&A{[1A>1][+B>.][.Z>.]}B{[1C<+][.Z<.]}C{[.A>1]}:11111..",
+        errorStringToFind= "", # Empty because we do not expect this test to fail
+        machinePath="./machines/UTM_unary_add.json",
+        inputTape="A&A{[1A>1][+B>.][.Z>.]}B{[1C<+][.Z<.]}C{[.A>1]}:111+11"
     ),
 ]
