@@ -6,7 +6,7 @@
 (*   By: clorin <clorin@student.42.fr>              +#+  +:+       +#+        *)
 (*                                                +#+#+#+#+#+   +#+           *)
 (*   Created: 2023/09/22 10:07:20 by clorin            #+#    #+#             *)
-(*   Updated: 2023/10/05 15:45:41 by clorin           ###   ########.fr       *)
+(*   Updated: 2023/10/16 14:25:14 by clorin           ###   ########.fr       *)
 (*                                                                            *)
 (* ************************************************************************** *)
 
@@ -63,7 +63,7 @@ let main_run (jsonfile:string) (input:string) : int =
 
   match result with
   | x when x <= 0 -> exit(1)
-  | _ -> result
+  | _ -> 0
       
 let process_command_line_args (args : string list) : int =
   match args with

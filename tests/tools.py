@@ -20,3 +20,8 @@ def getResultTape(output: subprocess.CompletedProcess[bytes]) -> str:
     result = splitedOutput[len(splitedOutput) - 4]
     splicedResult = result[1:len(result) - 1]
     return splicedResult
+
+def get_nbOp(machinePath: str, input: str) -> int:
+    command = f"{TURING_EXEC_PATH} -c {machinePath} '{input}'"
+    output = subprocess.check_output(command, shell=True, text=True)
+    return int(output)
