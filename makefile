@@ -6,7 +6,7 @@
 #    By: clorin <clorin@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/07/25 11:25:31 by clorin            #+#    #+#              #
-#    Updated: 2023/10/10 19:54:18 by clorin           ###   ########.fr        #
+#    Updated: 2023/10/16 16:16:00 by clorin           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,5 +25,9 @@ fclean : clean
 
 re :	fclean all
 
-test : all
-	python3 ./tests/tester.py
+test : 
+	@if [ -f ft_turing ]; then \
+		@python3 ./tests/tester.py; \
+	else \
+		echo "Error: ft_turing not found. Build it using 'make all' first in a docker"; \
+	fi
