@@ -1,6 +1,6 @@
 from tools import getOutputStr
 from tools import getResultTape
-from tools import getReturnCode, runTuring
+from tools import getReturnCode, runTuring, get_nbOp
 from termcolor import colored
 
 class Test:
@@ -10,14 +10,16 @@ class Test:
     errorStringToFind = "" # String to find if the expCode is 1
     machinePath = ""
     inputTape = ""
+    nbOp = 0 # expected nb operations
 
-    def __init__(self, description: str, expCode: int, expResult: str, errorStringToFind: str, machinePath: str, inputTape: str) -> None:
+    def __init__(self, description: str, expCode: int, expResult: str, errorStringToFind: str, machinePath: str, inputTape: str, nbOp : int) -> None:
         self.description = description
         self.expCode = expCode
         self.expResult = expResult
         self.errorStringToFind = errorStringToFind
         self.machinePath = machinePath
         self.inputTape = inputTape
+        self.nbOp = nbOp
         return
 
     def retCodeCompare(self, programOutput) -> bool:
@@ -25,6 +27,9 @@ class Test:
 
     def resultCompare(self, programOutput) -> bool:
         return self.expResult == getResultTape(programOutput)
+    
+    def nbOp_compare(self) -> bool:
+        return self.nbOp == get_nbOp(self.machinePath, self.inputTape)
 
     def isErrorMsgFound(self, programOutput) -> bool:
         outputStr = getOutputStr(programOutput)
@@ -40,7 +45,7 @@ class Test:
             )
         else:
             isSuccess = (
-                self.retCodeCompare(programOutput) and
+                self.retCodeCompare(programOutput) and self.nbOp_compare() and
                 self.resultCompare(programOutput)
             )
         if (isSuccess == True):
@@ -57,4 +62,5 @@ class Test:
                 print(f"    Expected tape : [{self.expResult}]")
                 print(f"    Current tape  : [{getResultTape(programOutput)}]")
                 print(f"    Expected retCode : [{self.expCode}] ; Current tape [{getReturnCode(programOutput)}]")
+                print(f"    Expected nb Ope : [{self.nbOp}] : Current nb Ope : {get_nbOp(self.machinePath, self.inputTape)}]")
         return isSuccess
