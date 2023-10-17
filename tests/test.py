@@ -27,7 +27,7 @@ class Test:
 
     def resultCompare(self, programOutput) -> bool:
         return self.expResult == getResultTape(programOutput)
-    
+
     def nbOp_compare(self) -> bool:
         return self.nbOp == get_nbOp(self.machinePath, self.inputTape)
 
