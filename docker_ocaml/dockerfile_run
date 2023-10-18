@@ -1,0 +1,10 @@
+# Utilisez une image de base (par exemple ocaml/opam)
+FROM ocaml/opam
+
+# Copiez le script d'initialisation dans l'image
+WORKDIR /home/opam/ft_turing
+
+COPY --chown=opam . .
+
+# Rendez le script exécutable
+RUN /home/opam/ft_turing/docker_ocaml/init.sh
