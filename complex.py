@@ -85,6 +85,7 @@ def calc_complex(container, machine, max=100):
     plt.plot(X_ref, Y_ref_log, linestyle='-', label='O(log n)', color='green', linewidth=1)
     plt.plot(X_ref, Y_ref_nlogn, linestyle='-', label='O(n log n)', color='orange', linewidth=1)
     plt.plot(X_ref, Y_ref_linear, linestyle='-', label='O(n)', color='cyan', linewidth=1)
+    plt.plot(X_ref, Y_ref_quadratic, linestyle='-', label='O(n^2)', color='black', linewidth=1)
     plt.plot(X_ref, Y_ref_exp, linestyle='-', label='O(2^n)', color='pink', linewidth=1)
     plt.plot(X_ref, Y_ref_factorial, linestyle='-', label='O(n!)', color='brown', linewidth=1)
 
@@ -138,26 +139,30 @@ def get_docker():
     except docker.errors.NotFound as e:
         print(f"Not Found.")
         return None
-    
-def usage():
-    print("Usage: complex.py <Machine name>")
-    for cle in dico.keys():
-        print(f"\t[{cle}]")
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        usage()
-        exit(1)
-    machine = sys.argv[1]
+    machine = ""
+    if len(sys.argv) == 2:
+        machine = sys.argv[1]
+    while machine not in dico:
+        machine = input ("Enter the name of Machine or list : ")
+        if (machine == "list"):
+            for cle in dico.keys():
+                print(f"\t[{cle}]")
     container_turing = get_docker()
     if (container_turing):
         print("Ok")
-        check_container(container_turing)
+        if not check_container(container_turing):
+            exit(0)
     else:
         print("searching './ft_turing' ... ", end='')
         check_ft_turing()
         print("Ok")
     path = f"machines/{machine}.json"
     if check_machine(path, machine):
-        calc_complex(container_turing, machine)
+        if machine == "X+Y":
+            max = 5
+        else:
+            max = 100
+        calc_complex(container_turing, machine, max)
     print ("end")
