@@ -48,7 +48,7 @@ ddev : # Rule to spawn a shell in the container that have all tool installed
 	docker run -it --rm --name turing ft_turing_run /bin/bash
 
 dtest: # Rule to run our tests
-	docker run -it --rm ft_turing_run make test
+	docker run -it --rm ft_turing_run /bin/sh -c "make build && make test"
 
 dbuild : # Rule to build and copy to the host the binary
 	docker run --rm --name turing ft_turing_run /bin/sh -c "make build && tail -f" &
