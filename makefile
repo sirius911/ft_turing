@@ -10,37 +10,52 @@
 #                                                                              #
 # **************************************************************************** #
 
-all :
+# Build a docker image, build the binary and copy it locally to the host
+all : dbuildImg dbuild
+
+# Build the binary locally
+build :
 	dune build
 	ln -sf _build/default/srcs/main.exe ft_turing
 
-run : all
-	./ft_turing
-
+# Clean the binary
 clean :
 	rm -f ./ft_turing
 
-fclean : clean
+# Clean the binary, opam build file and docker images if exists
+fclean : clean dclean
 	rm -rf _build/
 
+# Clean all and build the binary with docker
 re : fclean all
 
-test : all
+# Start the tester locally (be sure to have the binary)
+test :
 	@python3 ./tests/tester.py;
 
-complex : all
+# Display the complexity graph (be sure to have the binary)
+complex :
 	@python3 complex.py 
 
 ######################################################################
 # d prefix means that run is about docker or run the project in docker
 # Be sure to run the *dbuild* rule before the other commands
 #####
-dbuild :
+dbuildImg : # Rule to build the image
 	docker build -f docker_ocaml/dockerfile_run -t ft_turing_run .
 
-ddev :
-	docker run -it --rm --name turing ft_turing_run /bin/bash 
+ddev : # Rule to spawn a shell in the container that have all tool installed
+	docker run -it --rm --name turing ft_turing_run /bin/bash
 
-dtest:
+dtest: # Rule to run our tests
 	docker run -it --rm ft_turing_run make test
 
+dbuild : # Rule to build and copy to the host the binary
+	docker run --rm --name turing ft_turing_run /bin/sh -c "make build && tail -f" &
+	@echo "Waiting for the container to start"
+	sleep 10
+	docker cp turing:/home/opam/ft_turing/_build/default/srcs/main.exe ft_turing
+	docker kill turing
+
+dclean : # Rule to delete the docker image
+	docker rmi -f ft_turing_run
