@@ -7,13 +7,13 @@
 (source
  (github sirius911/ft_turing))
 
-(authors "Cyrille LORIN")
+(authors "Cyrille LORIN" "Jeremy Caudal")
 
 (maintainers "Cyrille LORIN")
 
 (license LICENSE)
 
-(documentation https://url/to/documentation)
+(documentation https://github.com/sirius911/ft_turing/blob/main/README.md)
 
 (package
  (name ft_turing)
