@@ -3,10 +3,10 @@ opam-version: "2.0"
 synopsis: "Turing machine interpreter"
 description: "An interpreter for Turing machines defined in .json files."
 maintainer: ["Cyrille LORIN"]
-authors: ["Cyrille LORIN"]
+authors: ["Cyrille LORIN" "Jeremy Caudal"]
 license: "LICENSE"
 homepage: "https://github.com/sirius911/ft_turing"
-doc: "https://url/to/documentation"
+doc: "https://github.com/sirius911/ft_turing/blob/main/README.md"
 bug-reports: "https://github.com/sirius911/ft_turing/issues"
 depends: [
   "ocaml" {>= "4.08"}

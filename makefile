@@ -6,7 +6,7 @@
 #    By: clorin <clorin@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/07/25 11:25:31 by clorin            #+#    #+#              #
-#    Updated: 2023/10/18 15:46:16 by clorin           ###   ########.fr        #
+#    Updated: 2023/10/26 16:09:14 by clorin           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -59,3 +59,5 @@ dbuild : # Rule to build and copy to the host the binary
 
 dclean : # Rule to delete the docker image
 	docker rmi -f ft_turing_run
+
+.PHONY: all build clean fclean re test complex dbuildImg ddev dtest dbuild dclean
