@@ -2,3 +2,5 @@ _build
 .vscode
 __pycache__/
 ft_turing
+venv
+.DS_Store
