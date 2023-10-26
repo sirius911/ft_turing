@@ -1,5 +1,10 @@
 # ft_turing
 
+### Contributors
+[Jérémy Caudal](https://github.com/Lobbyra)
+
+[Cyrille Lorin](https://github.com/sirius911)
+
 ### Introduction
 The Turing machine is a mathematical model fairly easy to understand and to implement.
 A formal definition is available [here](https://plato.stanford.edu/entries/turing-machine/), or [here](https://www.liafa.jussieu.fr/~carton/Enseignement/Complexite/MasterInfo/Cours/turing.html) for instance.
@@ -17,25 +22,53 @@ to name a few.
 
 ## Machines : 
 
-https://github.com/sirius911/ft_turing/blob/main/machines/machines.md
+https://github.com/sirius911/ft_turing/blob/main/machines/README.md
 
-## Build Docker Image
-To build de Docker image : 
-in docker_ocaml/
-run ./build.sh
+## Make commands
+- Build a docker image, build the binary and copy it locally to the host
 
-## to execute container : 
-./ocaml
+*all*
+
+- Build the binary locally
+
+*build* 
+
+- Clean the binary
+
+*clean*
+
+- Clean the binary, opam build file and docker images if exists
+
+*fclean*
+
+- Start the tester locally (be sure to have the binary)
+
+*test*
+
+- Display the complexity graph (be sure to have the binary)
+
+*complex* 
+
+*** 
+
+**d** prefix means that run is about docker or run the project in docker.
+
+Be sure to run the *dbuild* rule before the other commands
+
+***
+
+dbuildImg : # Rule to build the image
+
+ddev : # Rule to spawn a shell in the container that have all tool installed
+
+dtest: # Rule to run our tests
+
+dbuild : # Rule to build and copy to the host the binary
+
+dclean : # Rule to delete the docker image
 
 ## Complex.py
-Usage: python3 complex.py <Machine name>
-        [unary_add]
-        [unary_sub]
-        [02n]
-        [0n1n]
-        [0n12n]
-        [X+1]
-        [palindrome]
+Usage: python3 complex.py
 
 ### thks
 
