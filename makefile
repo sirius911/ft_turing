@@ -6,7 +6,7 @@
 #    By: clorin <clorin@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/07/25 11:25:31 by clorin            #+#    #+#              #
-#    Updated: 2023/10/26 16:09:14 by clorin           ###   ########.fr        #
+#    Updated: 2023/11/06 14:54:42 by clorin           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,7 +33,7 @@ cleanTestsRequirements :
 	@pip uninstall -y -r tests/requirements.txt
 
 installTestsRequirements :
-	@pip install -r tests/requirements.txt
+	@pip install -q -r tests/requirements.txt
 
 # Start the tester locally (be sure to have the binary)
 test : installTestsRequirements
@@ -43,7 +43,7 @@ cleanComplexRequirements :
 	@pip uninstall -y -r requirements.txt
 
 installComplexRequirements :
-	@pip install -r requirements.txt
+	@pip install -q -r requirements.txt
 
 # Display the complexity graph (be sure to have the binary)
 complex : installComplexRequirements

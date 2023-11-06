@@ -15,6 +15,7 @@
 import subprocess
 import matplotlib.pyplot as plt
 import numpy as np
+import math
 import os
 import sys
 import docker
@@ -78,7 +79,7 @@ def calc_complex(container, machine, max=100):
     Y_ref_exp = 2**X_ref  # O(2^n)
 
     # Calculer le facteur de n! pour chaque valeur dans X_ref
-    Y_ref_factorial = [np.math.factorial(int(x)) for x in X_ref]  # O(n!)
+    Y_ref_factorial = [math.factorial(int(x)) for x in X_ref]  # O(n!)
 
     plt.plot(X, Y, marker='.', linestyle='-', label=machine, color='blue', linewidth=1.5)
     plt.plot(X_ref, Y_ref_1, linestyle='-', label='O(1)', color='red', linewidth=1)
