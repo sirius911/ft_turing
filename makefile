@@ -23,14 +23,20 @@ clean :
 	rm -f ./ft_turing
 
 # Clean the binary, opam build file and docker images if exists
-fclean : clean dclean
+fclean : clean dclean cleanTestsRequirements
 	rm -rf _build/
 
 # Clean all and build the binary with docker
 re : fclean all
 
+cleanTestsRequirements :
+	@pip uninstall -y -r tests/requirements.txt
+
+installTestsRequirements :
+	@pip install -r tests/requirements.txt
+
 # Start the tester locally (be sure to have the binary)
-test :
+test : installTestsRequirements
 	@python3 ./tests/tester.py;
 
 # Display the complexity graph (be sure to have the binary)
