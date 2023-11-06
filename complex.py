@@ -31,18 +31,22 @@ dico = {
     'X+Y': "{'1' * i}{'0' * i}+{'1' * i}{'0' * i}=",
     'palindrome': "{'0' * i}{'1' * i}",
     'palindrome_letters': "{'a' * i}{'b' * i}{'c' * i}",
+    'UTM_unary_add': "{'1' * i}+{'1' * i}"
 }
 
-def generate_input (pattern, max):
+def generate_input (pattern, max, machine):
     input_sizes = []
     for i in range(1, max + 1):
-        input_string = eval(f'f"{pattern}"')
+        if machine == 'UTM_unary_add':
+            input_string = "'A&A{[1A>1][+B>.][.Z>.]}B{[1C<+][.Z<.]}C{[.A>1]}:" + eval(f'f"{pattern}"')+"'"
+        else:
+            input_string = eval(f'f"{pattern}"')
         input_sizes.append(input_string)
     return input_sizes
 
 def calc_complex(container, machine, max=100):
     pattern = dico[machine]
-    input_sizes = generate_input(pattern, max)
+    input_sizes = generate_input(pattern, max, machine)
     # Initialiser une liste pour stocker les résultats (X, Y)
     results = []
     for input_size in input_sizes:
@@ -68,9 +72,12 @@ def calc_complex(container, machine, max=100):
         results.append((len(input_size), step_counter))
 
     X, Y = zip(*results)
+    maxX = X[-1]
+    maxY = Y[-1]
 
     #courbes de référence
-    X_ref = np.linspace(1, 100, 1000)  # plage de X de 0 à 100
+    X_ref = np.linspace(1, maxX, 50)  # plage de X de 0 à 100
+    X_ref_fact = np.linspace(1, 100, 1000)
     Y_ref_1 = np.ones_like(X_ref)  # O(1)
     Y_ref_log = np.log2(X_ref)  # O(log n)
     Y_ref_linear = X_ref  # O(n)
@@ -79,16 +86,16 @@ def calc_complex(container, machine, max=100):
     Y_ref_exp = 2**X_ref  # O(2^n)
 
     # Calculer le facteur de n! pour chaque valeur dans X_ref
-    Y_ref_factorial = [math.factorial(int(x)) for x in X_ref]  # O(n!)
+    Y_ref_factorial = [math.factorial(int(x)) for x in X_ref_fact]  # O(n!)
 
-    plt.plot(X, Y, marker='.', linestyle='-', label=machine, color='blue', linewidth=1.5)
+    plt.plot(X, Y, linestyle=':', label=machine, color='blue', linewidth=1.5)
     plt.plot(X_ref, Y_ref_1, linestyle='-', label='O(1)', color='red', linewidth=1)
     plt.plot(X_ref, Y_ref_log, linestyle='-', label='O(log n)', color='green', linewidth=1)
     plt.plot(X_ref, Y_ref_nlogn, linestyle='-', label='O(n log n)', color='orange', linewidth=1)
     plt.plot(X_ref, Y_ref_linear, linestyle='-', label='O(n)', color='cyan', linewidth=1)
     plt.plot(X_ref, Y_ref_quadratic, linestyle='-', label='O(n^2)', color='black', linewidth=1)
     plt.plot(X_ref, Y_ref_exp, linestyle='-', label='O(2^n)', color='pink', linewidth=1)
-    plt.plot(X_ref, Y_ref_factorial, linestyle='-', label='O(n!)', color='brown', linewidth=1)
+    plt.plot(X_ref_fact, Y_ref_factorial, linestyle='-', label='O(n!)', color='brown', linewidth=1)
 
     plt.xlabel('Elements')
     plt.ylabel('Operations')
@@ -97,9 +104,11 @@ def calc_complex(container, machine, max=100):
 
     plt.legend()
 
-    plt.xlim(0, 100)
-    plt.ylim(0, 300)
+    plt.xlim(0,maxX + (maxX / 3))
+    plt.ylim(0, maxY + (maxY / 3))
 
+    manager = plt.get_current_fig_manager()
+    manager.full_screen_toggle()
     plt.show()
 
 def check_machine(json_file, machine):
@@ -163,7 +172,9 @@ if __name__ == "__main__":
     path = f"machines/{machine}.json"
     if check_machine(path, machine):
         if machine == "X+Y":
-            max = 5
+            max = 8
+        elif machine == "UTM_unary_add":
+            max = 50
         else:
             max = 100
         calc_complex(container_turing, machine, max)
