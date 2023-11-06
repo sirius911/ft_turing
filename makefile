@@ -23,7 +23,7 @@ clean :
 	rm -f ./ft_turing
 
 # Clean the binary, opam build file and docker images if exists
-fclean : clean dclean cleanTestsRequirements
+fclean : clean dclean cleanTestsRequirements cleanComplexRequirements
 	rm -rf _build/
 
 # Clean all and build the binary with docker
@@ -39,8 +39,14 @@ installTestsRequirements :
 test : installTestsRequirements
 	@python3 ./tests/tester.py;
 
+cleanComplexRequirements :
+	@pip uninstall -y -r requirements.txt
+
+installComplexRequirements :
+	@pip install -r requirements.txt
+
 # Display the complexity graph (be sure to have the binary)
-complex :
+complex : installComplexRequirements
 	@python3 complex.py 
 
 ######################################################################

@@ -111,7 +111,8 @@ def check_machine(json_file, machine):
     return (True)
 
 def check_ft_turing():
-    if not(os.path.islink('ft_turing')) or not(os.access('ft_turing', os.X_OK)):
+    # if not(os.path.islink('ft_turing')) or not(os.access('ft_turing', os.X_OK)):
+    if not(os.path.isfile('ft_turing')):
         print(f"'ft_turing' not found.")
         exit(0)
 
