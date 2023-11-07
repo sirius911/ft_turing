@@ -6,7 +6,7 @@
 #    By: clorin <clorin@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/07/25 11:25:31 by clorin            #+#    #+#              #
-#    Updated: 2023/11/06 14:54:42 by clorin           ###   ########.fr        #
+#    Updated: 2023/11/07 20:04:02 by clorin           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,7 @@ clean :
 	rm -f ./ft_turing
 
 # Clean the binary, opam build file and docker images if exists
-fclean : clean dclean cleanTestsRequirements cleanComplexRequirements
+fclean : clean dclean 
 	rm -rf _build/
 
 # Clean all and build the binary with docker
